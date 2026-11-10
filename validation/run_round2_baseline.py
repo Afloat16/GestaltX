@@ -182,7 +182,10 @@ def run_case(repo: Path, baseline: str, tests_ref: str | None, swiftc: str,
     # generic nonzero exit, a loader error, or text from compilation diagnostics.
     pattern = re.compile(r"Error raised at top level: .*" + re.escape(case["error_type"]) +
                          r'\s*"' + re.escape(case["expected"]) + r'"')
-    matched = next((line for line in ran["output"].splitlines() if pattern.search(line)), None)
+    # Swift's reflected Error description can put a backslash before an apostrophe.
+    # Normalize that debug escape only; retain the original line in all evidence.
+    matched = next((line for line in ran["output"].splitlines()
+                    if pattern.search(line.replace("\\'", "'"))), None)
     if ran["timed_out"] or ran["elapsed_seconds"] >= RUN_TIMEOUT:
         status = "run_timed_out"
     elif ran["returncode"] == 0:

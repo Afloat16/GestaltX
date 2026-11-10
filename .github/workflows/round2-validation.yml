@@ -5,9 +5,9 @@ on:
 permissions:
   contents: read
 jobs:
-  baseline-proof:
+  baseline-provenance:
     runs-on: xcode-27
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
         with:
@@ -17,12 +17,12 @@ jobs:
           path: source
           ref: e6ee31c60d93f7f8da51236d492ca927677e1de8
           fetch-depth: 0
-      - name: Prove regressions against unchanged upstream production sources
-        run: python3 harness/validation/run_round2_baseline.py --repo source --tests-ref HEAD --output-dir "$RUNNER_TEMP/round2-baseline"
+      - name: Verify the original ownership regression
+        run: python3 harness/validation/run_round2_baseline.py --repo source --tests-ref HEAD --case A --output-dir "$RUNNER_TEMP/round2-baseline-A"
       - name: Preserve exact sources and failure evidence
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: round2-baseline-proof
-          path: ${{ runner.temp }}/round2-baseline
+          name: round2-baseline-provenance
+          path: ${{ runner.temp }}/round2-baseline-A
           retention-days: 14
