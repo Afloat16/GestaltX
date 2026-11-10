@@ -1,4 +1,5 @@
 import Foundation
+import Darwin
 
 private final class RedirectingCoordinator: NSFileCoordinator {
     let readableURL: URL
@@ -43,6 +44,28 @@ private final class FailingCoordinator: NSFileCoordinator {
         let local = try SharedPlistInbox.readDocument(at: readable)
         precondition(local == bytes)
 
+        let fifo = root.appendingPathComponent("pipe.plist")
+        let madeFIFO = fifo.withUnsafeFileSystemRepresentation { mkfifo($0!, 0o600) }
+        precondition(madeFIFO == 0)
+        let link = root.appendingPathComponent("link.plist")
+        try fm.createSymbolicLink(at: link, withDestinationURL: readable)
+        for special in [fifo, root, link] {
+            let coordinator = RedirectingCoordinator(readableURL: readable)
+            do {
+                _ = try SharedPlistInbox.readDocument(at: special, coordinator: coordinator)
+                preconditionFailure("Reject known nonregular files before invoking a coordinator")
+            } catch let error as SharedPlistError {
+                precondition(error.key == "The shared plist could not be read. Share it again.")
+            }
+            precondition(coordinator.requestedURL == nil, "A special file must not reach coordination")
+        }
+        // Exercise the default coordinator as well: it must never wait for a
+        // writer on this real named pipe. The test runner bounds each process.
+        do {
+            _ = try SharedPlistInbox.readDocument(at: fifo)
+            preconditionFailure("Reject a FIFO without blocking in NSFileCoordinator")
+        } catch is SharedPlistError {}
+
         let failing = FailingCoordinator(filePresenter: nil)
         do {
             _ = try SharedPlistInbox.readDocument(at: readable, coordinator: failing)
@@ -64,6 +87,6 @@ private final class FailingCoordinator: NSFileCoordinator {
         } catch let error as SharedPlistError {
             precondition(error.key == "Choose a plist smaller than 16 MB.")
         }
-        print("PASS: coordinated URL reads, coordination-error propagation, validation and bounded reads.")
+        print("PASS: coordinated URL reads, missing placeholders, nonregular-file preflight, coordination errors and bounded reads.")
     }
 }

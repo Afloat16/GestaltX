@@ -206,7 +206,7 @@ struct ContentView: View {
             defer { isCheckingSharedImport = false }
             selectedTab = 0
             sharedImportNoticeShown = true
-            let selection = await SharedImportQueue.next(in: entries) { inbox, entry in
+            let selection: SharedImportQueue.Selection<PlistImportOffer> = await SharedImportQueue.next(in: entries) { inbox, entry in
                 guard canPresentSharedImport else { return .deferred(nil) }
                 return await model.prepareSharedPlist(entry, from: inbox)
             }
