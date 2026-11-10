@@ -5,28 +5,24 @@ on:
 permissions:
   contents: read
 jobs:
-  native:
-    name: ${{ matrix.label }}
+  baseline-proof:
     runs-on: xcode-27
     timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix:
-        include: [{"label":"preserve-device-identity-fields","sha":"3fd8b54eb858d510c7f3df9a96ed39f4ed679fc2","build":true,"tests":"[\"tests/DeviceIdentityEditTests.swift\"]"},{"label":"skip-unchanged-device-restores","sha":"030d13d711cff0fcedff154120d7ddce188eefe1","build":true,"tests":"[\"tests/UnchangedRestoreTests.swift\"]"},{"label":"scope-originals-to-cache-generation","sha":"728119ed6236ba13aa641e2f345f250b9ea54c6b","build":true,"tests":"[\"tests/OriginalCacheGenerationTests.swift\"]"},{"label":"clean-abandoned-shared-files","sha":"e5ceea5f6c6efc9cd2711452adcedfa8713e45b2","build":true,"tests":"[\"tests/SharedInboxCleanupTests.swift\"]"},{"label":"retry-temporary-shared-imports","sha":"f7b691fa559643aa7dae4f2423fd6abc56bd88d2","build":true,"tests":"[\"tests/SharedImportRecoveryTests.swift\"]"},{"label":"combined-regressions-1","sha":"e6ee31c60d93f7f8da51236d492ca927677e1de8","build":true,"tests":"[\"tests/ArtworkPreservationTests.swift\",\"tests/BackupLayoutTests.swift\",\"tests/DeviceBoundPlistTests.swift\",\"tests/DocumentTests.swift\",\"tests/ItemProviderLoadTests.swift\",\"tests/OriginalCacheGenerationTests.swift\",\"tests/SharedImportWorkerTests.swift\",\"tests/SharedMetadataNameTests.swift\"]"},{"label":"combined-regressions-2","sha":"e6ee31c60d93f7f8da51236d492ca927677e1de8","build":false,"tests":"[\"tests/BackupDeletionTests.swift\",\"tests/CacheDirectoryTests.m\",\"tests/DeviceIdentityEditTests.swift\",\"tests/DynamicIslandRestorationTests.swift\",\"tests/LocalRestoreProvenanceTests.swift\",\"tests/OriginalHistoryMigrationTests.swift\",\"tests/SharedInboxCleanupTests.swift\",\"tests/SharedPlistInboxTests.swift\"]"},{"label":"combined-regressions-3","sha":"e6ee31c60d93f7f8da51236d492ca927677e1de8","build":false,"tests":"[\"tests/BackupExportProofTests.swift\",\"tests/CapabilityCatalogTests.swift\",\"tests/DevicePlistIdentityTests.swift\",\"tests/FieldValuePrecisionTests.swift\",\"tests/MalformedCacheDescriptorTests.swift\",\"tests/SharedImportQueueTests.swift\",\"tests/SharedInboxContainmentTests.swift\",\"tests/TemporaryExportTests.swift\"]"},{"label":"combined-regressions-4","sha":"e6ee31c60d93f7f8da51236d492ca927677e1de8","build":false,"tests":"[\"tests/BackupIntegrityTests.swift\",\"tests/CoordinatedPlistReadTests.swift\",\"tests/DirectFileImportTests.swift\",\"tests/IntegerValueTests.swift\",\"tests/NonFinitePlistTests.swift\",\"tests/SharedImportRecoveryTests.swift\",\"tests/SharedInboxIsolationTests.swift\",\"tests/UnchangedRestoreTests.swift\"]"}]
     steps:
       - uses: actions/checkout@v7
         with:
           path: harness
       - uses: actions/checkout@v7
         with:
-          ref: ${{ matrix.sha }}
           path: source
-      - name: Compile and run regression tests
-        env:
-          GX_TESTS: ${{ matrix.tests }}
-        run: python3 harness/validation/run_native.py source
-      - name: Build iOS simulator app and extension
-        if: matrix.build
-        working-directory: source
-        run: xcodebuild -quiet -project GestaltX.xcodeproj -target GestaltX -configuration Debug -sdk iphonesimulator SYMROOT="$RUNNER_TEMP/gx-build" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM="" build
+          ref: e6ee31c60d93f7f8da51236d492ca927677e1de8
+          fetch-depth: 0
+      - name: Prove regressions against unchanged upstream production sources
+        run: python3 harness/validation/run_round2_baseline.py --repo source --tests-ref HEAD --output-dir "$RUNNER_TEMP/round2-baseline"
+      - name: Preserve exact sources and failure evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: round2-baseline-proof
+          path: ${{ runner.temp }}/round2-baseline
+          retention-days: 14
