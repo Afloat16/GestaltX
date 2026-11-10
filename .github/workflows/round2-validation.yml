@@ -1,0 +1,16 @@
+name: Round 2 native validation
+on:
+  push:
+    branches: [validation/gestaltx-round2-20261110]
+permissions:
+  contents: read
+jobs:
+  foundation-probe:
+    runs-on: xcode-27
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - name: Reproduce Foundation NaN comparison
+        run: |
+          swiftc -swift-version 5 -parse-as-library GestaltX/Capabilities.swift GestaltX/MobileGestaltCacheLayout.swift GestaltX/DeviceCacheOptions.swift GestaltX/GestaltDocument.swift Shared/SharedPlistInbox.swift GestaltX/DeviceBoundPlist.swift validation/NaNFoundationProbe.swift -o "$RUNNER_TEMP/gx-nan-probe"
+          python3 -c 'import subprocess,os; subprocess.run([os.environ["RUNNER_TEMP"]+"/gx-nan-probe"],check=True,timeout=90)'
