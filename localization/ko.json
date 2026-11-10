@@ -213,6 +213,7 @@
   "Local changes saved. Export the plist to keep a copy.": "로컬 변경 사항이 저장되었습니다. 사본을 보관하려면 plist를 내보내십시오.",
   "Backup saved": "백업 저장됨",
   "Backup restored and verified.": "백업이 복원되고 검증되었습니다.",
+  "This backup already matches the device. No changes were made.": "이 백업은 이미 기기와 일치합니다. 변경 사항이 없습니다.",
   "Backup opened as a local document.": "백업이 로컬 문서로 열렸습니다.",
   "Manual backup": "수동 백업",
   "Before editing": "편집 전",
@@ -282,11 +283,13 @@
   "The original-value record belongs to a different device.": "원본 값 기록이 다른 기기의 것입니다.",
   "Original values could not be saved and verified. No system write was started.": "원본 값을 저장하고 검증할 수 없습니다. 시스템 쓰기 작업이 시작되지 않았습니다.",
   "The selected added fields must be removed before applying.": "적용하기 전에 선택한 추가 필드를 제거해야 합니다.",
+  "Device identity fields cannot be changed in the system plist. Open a local file to edit these fields.": "시스템 plist의 기기 식별 필드는 변경할 수 없습니다. 이 필드를 편집하려면 로컬 파일을 여세요.",
   "Initial backup": "초기 백업",
   "Original values snapshot": "원본 값 스냅샷",
   "Revert": "되돌리기",
   "Original values restored.": "원본 값이 복원되었습니다.",
   "The cache layout or values do not match this preset.": "캐시 레이아웃 또는 값이 이 프리셋과 일치하지 않습니다.",
+  "The original value belongs to a different cache layout. A matching backup is needed to restore it.": "원래 값이 다른 캐시 레이아웃에 속합니다. 복원하려면 일치하는 백업이 필요합니다.",
   "This preset changes unrelated cache bytes.": "이 프리셋은 관련 없는 캐시 바이트를 변경합니다.",
   "Unable to resolve this device's MobileGestalt cache layout.": "이 기기의 MobileGestalt 캐시 레이아웃을 파악할 수 없습니다.",
   "Importing Plist…": "Plist 가져오는 중…",
@@ -358,5 +361,10 @@
   "Handwriting Synthesis": "手寫合成",
   "Advertise the handwriting synthesis model capability.": "宣告手寫合成模型能力。",
   "Always-Listening Hey Siri": "常聽 Hey Siri",
-  "Advertise always-listening Hey Siri support.": "宣告支援常聽 Hey Siri。"
+  "Advertise always-listening Hey Siri support.": "宣告支援常聽 Hey Siri。",
+  "Internal Build": "내부 빌드",
+  "Changes the system-wide InternalBuild flag, not just storage information. System services may behave differently. Revert restores the recorded original value.": "저장 공간 정보뿐 아니라 시스템 전체의 InternalBuild 플래그를 변경합니다. 시스템 서비스의 동작이 달라질 수 있습니다. 되돌리면 기록된 원래 값이 복원됩니다.",
+  "Enable Internal Build?": "내부 빌드를 활성화할까요?",
+  "This stages the system-wide InternalBuild flag. It can affect system services beyond the storage screen. You can review the change before applying it.": "시스템 전체의 InternalBuild 플래그 변경을 준비합니다. 저장 공간 화면 이외의 시스템 서비스에도 영향을 줄 수 있습니다. 적용하기 전에 변경 사항을 검토할 수 있습니다.",
+  "The device proof is temporarily unavailable. Unlock this device and try again.": "기기 증명을 일시적으로 사용할 수 없습니다. 이 기기의 잠금을 해제한 후 다시 시도하세요."
 }

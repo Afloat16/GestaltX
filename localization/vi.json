@@ -213,6 +213,7 @@
   "Local changes saved. Export the plist to keep a copy.": "Đã lưu thay đổi cục bộ. Xuất tệp plist để giữ một bản sao.",
   "Backup saved": "Đã lưu bản sao lưu",
   "Backup restored and verified.": "Đã khôi phục và xác minh bản sao lưu.",
+  "This backup already matches the device. No changes were made.": "Bản sao lưu này đã khớp với thiết bị. Không có thay đổi nào được thực hiện.",
   "Backup opened as a local document.": "Đã mở bản sao lưu dưới dạng tài liệu cục bộ.",
   "Manual backup": "Sao lưu thủ công",
   "Before editing": "Trước khi chỉnh sửa",
@@ -282,11 +283,13 @@
   "The original-value record belongs to a different device.": "Bản ghi giá trị gốc thuộc về thiết bị khác.",
   "Original values could not be saved and verified. No system write was started.": "Không thể lưu và xác minh các giá trị gốc. Chưa bắt đầu ghi tệp hệ thống.",
   "The selected added fields must be removed before applying.": "Phải xóa các trường đã thêm được chọn trước khi áp dụng.",
+  "Device identity fields cannot be changed in the system plist. Open a local file to edit these fields.": "Không thể thay đổi các trường nhận dạng thiết bị trong plist hệ thống. Hãy mở tệp cục bộ để chỉnh sửa các trường này.",
   "Initial backup": "Bản sao lưu đầu tiên",
   "Original values snapshot": "Ảnh chụp các giá trị gốc",
   "Revert": "Hoàn nguyên",
   "Original values restored.": "Đã khôi phục các giá trị gốc.",
   "The cache layout or values do not match this preset.": "Bố cục hoặc giá trị bộ nhớ đệm không khớp với tùy chọn này.",
+  "The original value belongs to a different cache layout. A matching backup is needed to restore it.": "Giá trị gốc thuộc một bố cục bộ nhớ đệm khác. Cần có bản sao lưu phù hợp để khôi phục.",
   "This preset changes unrelated cache bytes.": "Tùy chọn này thay đổi các byte bộ nhớ đệm không liên quan.",
   "Unable to resolve this device's MobileGestalt cache layout.": "Không thể phân tích cấu trúc bộ nhớ đệm MobileGestalt của thiết bị này.",
   "Importing Plist…": "Đang nhập plist…",
@@ -358,5 +361,10 @@
   "Handwriting Synthesis": "필기 합성",
   "Advertise the handwriting synthesis model capability.": "필기 합성 모델 기능을 알립니다.",
   "Always-Listening Hey Siri": "상시 대기 Hey Siri",
-  "Advertise always-listening Hey Siri support.": "상시 대기 Hey Siri 지원을 알립니다."
+  "Advertise always-listening Hey Siri support.": "상시 대기 Hey Siri 지원을 알립니다.",
+  "Internal Build": "Bản dựng nội bộ",
+  "Changes the system-wide InternalBuild flag, not just storage information. System services may behave differently. Revert restores the recorded original value.": "Thay đổi cờ InternalBuild trên toàn hệ thống, không chỉ thông tin bộ nhớ. Hoạt động của các dịch vụ hệ thống có thể thay đổi. Hoàn nguyên sẽ khôi phục giá trị gốc đã ghi lại.",
+  "Enable Internal Build?": "Bật bản dựng nội bộ?",
+  "This stages the system-wide InternalBuild flag. It can affect system services beyond the storage screen. You can review the change before applying it.": "Thao tác này đưa thay đổi cờ InternalBuild toàn hệ thống vào danh sách chờ. Nó có thể ảnh hưởng đến các dịch vụ ngoài màn hình bộ nhớ. Bạn có thể xem lại thay đổi trước khi áp dụng.",
+  "The device proof is temporarily unavailable. Unlock this device and try again.": "Bằng chứng thiết bị tạm thời không khả dụng. Hãy mở khóa thiết bị này rồi thử lại."
 }

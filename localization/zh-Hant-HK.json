@@ -213,6 +213,7 @@
   "Local changes saved. Export the plist to keep a copy.": "本地更改已保存，請導出 plist 以保留副本。",
   "Backup saved": "備份已保存",
   "Backup restored and verified.": "備份已恢復並通過驗證。",
+  "This backup already matches the device. No changes were made.": "此備份已與裝置一致，未作任何更改。",
   "Backup opened as a local document.": "已將備份打開為本地文稿。",
   "Manual backup": "手動備份",
   "Before editing": "編輯前備份",
@@ -282,11 +283,13 @@
   "The original-value record belongs to a different device.": "原值記錄屬於其他裝置。",
   "Original values could not be saved and verified. No system write was started.": "無法儲存並驗證原值記錄，尚未開始寫入系統檔案。",
   "The selected added fields must be removed before applying.": "請先移除已選取的新增欄位，再套用更改。",
+  "Device identity fields cannot be changed in the system plist. Open a local file to edit these fields.": "不能更改系統 plist 中的裝置身分欄位。如需編輯這些欄位，請開啟本機檔案。",
   "Initial backup": "首次備份",
   "Original values snapshot": "修改前原值快照",
   "Revert": "還原",
   "Original values restored.": "已還原原值。",
   "The cache layout or values do not match this preset.": "快取配置或數值與此預設不符。",
+  "The original value belongs to a different cache layout. A matching backup is needed to restore it.": "原值屬於不同的快取配置，需要相符的備份才能還原。",
   "This preset changes unrelated cache bytes.": "此預設更改了無關的快取位元組。",
   "Unable to resolve this device's MobileGestalt cache layout.": "無法解析此裝置的 MobileGestalt 快取配置。",
   "Importing Plist…": "正在匯入 plist…",
@@ -358,5 +361,10 @@
   "Handwriting Synthesis": "Синтез рукописного текста",
   "Advertise the handwriting synthesis model capability.": "Объявляет возможность модели синтеза рукописного текста.",
   "Always-Listening Hey Siri": "Постоянно слушающая Hey Siri",
-  "Advertise always-listening Hey Siri support.": "Объявляет поддержку постоянно слушающей Hey Siri."
+  "Advertise always-listening Hey Siri support.": "Объявляет поддержку постоянно слушающей Hey Siri.",
+  "Internal Build": "內部構建",
+  "Changes the system-wide InternalBuild flag, not just storage information. System services may behave differently. Revert restores the recorded original value.": "修改系統全域的 InternalBuild 標記，並非只調整儲存空間資訊。系統服務的行為可能改變。「還原」會恢復已記錄的原始值。",
+  "Enable Internal Build?": "啟用內部構建？",
+  "This stages the system-wide InternalBuild flag. It can affect system services beyond the storage screen. You can review the change before applying it.": "這會暫存系統全域的 InternalBuild 標記變更。它可能影響儲存空間畫面以外的系統服務。你可以在套用前檢查這項變更。",
+  "The device proof is temporarily unavailable. Unlock this device and try again.": "裝置憑證暫時無法使用。請解鎖此裝置後重試。"
 }

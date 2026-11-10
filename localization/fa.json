@@ -213,6 +213,7 @@
   "Local changes saved. Export the plist to keep a copy.": "تغییرات محلی ذخیره شدند. برای نگه‌داشتن یک کپی، plist را صادر کنید.",
   "Backup saved": "نسخهٔ پشتیبان ذخیره شد",
   "Backup restored and verified.": "نسخهٔ پشتیبان بازیابی و تأیید شد.",
+  "This backup already matches the device. No changes were made.": "این نسخهٔ پشتیبان از قبل با دستگاه مطابقت دارد. هیچ تغییری انجام نشد.",
   "Backup opened as a local document.": "نسخهٔ پشتیبان به‌عنوان سند محلی باز شد.",
   "Manual backup": "پشتیبان‌گیری دستی",
   "Before editing": "پیش از ویرایش",
@@ -282,11 +283,13 @@
   "The original-value record belongs to a different device.": "سابقهٔ مقادیر اصلی متعلق به دستگاه دیگری است.",
   "Original values could not be saved and verified. No system write was started.": "ذخیره و تأیید مقادیر اصلی ممکن نشد. نوشتن فایل سیستم آغاز نشده است.",
   "The selected added fields must be removed before applying.": "پیش از اعمال، فیلدهای افزوده‌شدهٔ انتخابی باید حذف شوند.",
+  "Device identity fields cannot be changed in the system plist. Open a local file to edit these fields.": "فیلدهای هویت دستگاه در plist سیستم قابل تغییر نیستند. برای ویرایش این فیلدها یک فایل محلی باز کنید.",
   "Initial backup": "پشتیبان اولیه",
   "Original values snapshot": "نسخه‌ای از مقادیر اصلی",
   "Revert": "بازگردانی",
   "Original values restored.": "مقادیر اصلی بازگردانده شدند.",
   "The cache layout or values do not match this preset.": "ساختار یا مقادیر حافظهٔ نهان با این تنظیم مطابقت ندارد.",
+  "The original value belongs to a different cache layout. A matching backup is needed to restore it.": "مقدار اصلی متعلق به چیدمان دیگری از حافظهٔ پنهان است. برای بازیابی آن به نسخهٔ پشتیبان سازگار نیاز است.",
   "This preset changes unrelated cache bytes.": "این تنظیم بایت‌های نامرتبط حافظهٔ نهان را تغییر می‌دهد.",
   "Unable to resolve this device's MobileGestalt cache layout.": "ساختار حافظهٔ نهان MobileGestalt این دستگاه قابل تشخیص نیست.",
   "Importing Plist…": "در حال وارد کردن plist…",
@@ -358,5 +361,10 @@
   "Handwriting Synthesis": "手寫合成",
   "Advertise the handwriting synthesis model capability.": "宣告手寫合成模型能力。",
   "Always-Listening Hey Siri": "常聽 Hey Siri",
-  "Advertise always-listening Hey Siri support.": "宣告支援常聽 Hey Siri。"
+  "Advertise always-listening Hey Siri support.": "宣告支援常聽 Hey Siri。",
+  "Internal Build": "بیلد داخلی",
+  "Changes the system-wide InternalBuild flag, not just storage information. System services may behave differently. Revert restores the recorded original value.": "پرچم سراسری InternalBuild را تغییر می‌دهد، نه فقط اطلاعات فضای ذخیره‌سازی را. رفتار سرویس‌های سیستم ممکن است تغییر کند. بازگردانی، مقدار اصلی ثبت‌شده را بازیابی می‌کند.",
+  "Enable Internal Build?": "بیلد داخلی فعال شود؟",
+  "This stages the system-wide InternalBuild flag. It can affect system services beyond the storage screen. You can review the change before applying it.": "این کار تغییر پرچم سراسری InternalBuild را آماده می‌کند. اثر آن بر سرویس‌های سیستم ممکن است فراتر از صفحهٔ فضای ذخیره‌سازی باشد. پیش از اعمال، می‌توانید تغییر را بررسی کنید.",
+  "The device proof is temporarily unavailable. Unlock this device and try again.": "گواه دستگاه موقتاً در دسترس نیست. قفل این دستگاه را باز کنید و دوباره تلاش کنید."
 }

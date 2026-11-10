@@ -213,6 +213,7 @@
   "Local changes saved. Export the plist to keep a copy.": "Локальные изменения сохранены. Экспортируйте plist, чтобы сохранить копию.",
   "Backup saved": "Резервная копия сохранена",
   "Backup restored and verified.": "Резервная копия восстановлена и проверена.",
+  "This backup already matches the device. No changes were made.": "Эта резервная копия уже соответствует устройству. Изменения не внесены.",
   "Backup opened as a local document.": "Резервная копия открыта как локальный документ.",
   "Manual backup": "Ручное резервное копирование",
   "Before editing": "Перед редактированием",
@@ -282,11 +283,13 @@
   "The original-value record belongs to a different device.": "Запись исходных значений принадлежит другому устройству.",
   "Original values could not be saved and verified. No system write was started.": "Не удалось сохранить и проверить исходные значения. Запись системного файла не началась.",
   "The selected added fields must be removed before applying.": "Перед применением выбранные добавленные поля должны быть удалены.",
+  "Device identity fields cannot be changed in the system plist. Open a local file to edit these fields.": "Поля идентификации устройства нельзя изменять в системном plist. Для их редактирования откройте локальный файл.",
   "Initial backup": "Первоначальная резервная копия",
   "Original values snapshot": "Снимок исходных значений",
   "Revert": "Вернуть",
   "Original values restored.": "Исходные значения восстановлены.",
   "The cache layout or values do not match this preset.": "Структура или значения кэша не соответствуют этой настройке.",
+  "The original value belongs to a different cache layout. A matching backup is needed to restore it.": "Исходное значение относится к другой структуре кэша. Для его восстановления нужна соответствующая резервная копия.",
   "This preset changes unrelated cache bytes.": "Эта настройка изменяет посторонние байты кэша.",
   "Unable to resolve this device's MobileGestalt cache layout.": "Не удалось определить структуру кэша MobileGestalt этого устройства.",
   "Importing Plist…": "Импорт plist…",
@@ -358,5 +361,10 @@
   "Handwriting Synthesis": "سنتز دست‌نویس",
   "Advertise the handwriting synthesis model capability.": "قابلیت مدل سنتز دست‌نویس را اعلام می‌کند.",
   "Always-Listening Hey Siri": "Hey Siri همیشه‌شنوا",
-  "Advertise always-listening Hey Siri support.": "پشتیبانی از Hey Siri همیشه‌شنوا را اعلام می‌کند."
+  "Advertise always-listening Hey Siri support.": "پشتیبانی از Hey Siri همیشه‌شنوا را اعلام می‌کند.",
+  "Internal Build": "Внутренняя сборка",
+  "Changes the system-wide InternalBuild flag, not just storage information. System services may behave differently. Revert restores the recorded original value.": "Изменяет системный флаг InternalBuild, а не только сведения о хранилище. Поведение системных служб может измениться. Возврат восстанавливает записанное исходное значение.",
+  "Enable Internal Build?": "Включить внутреннюю сборку?",
+  "This stages the system-wide InternalBuild flag. It can affect system services beyond the storage screen. You can review the change before applying it.": "Изменение системного флага InternalBuild будет подготовлено. Оно может затронуть службы за пределами экрана хранилища. Перед применением можно проверить изменение.",
+  "The device proof is temporarily unavailable. Unlock this device and try again.": "Подтверждение устройства временно недоступно. Разблокируйте устройство и повторите попытку."
 }

@@ -3589,6 +3589,58 @@
         }
       }
     },
+    "Device identity fields cannot be changed in the system plist. Open a local file to edit these fields.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Device identity fields cannot be changed in the system plist. Open a local file to edit these fields."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不能更改系统 plist 中的设备身份字段。如需编辑这些字段，请打开本地文件。"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فیلدهای هویت دستگاه در plist سیستم قابل تغییر نیستند. برای ویرایش این فیلدها یک فایل محلی باز کنید."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시스템 plist의 기기 식별 필드는 변경할 수 없습니다. 이 필드를 편집하려면 로컬 파일을 여세요."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поля идентификации устройства нельзя изменять в системном plist. Для их редактирования откройте локальный файл."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không thể thay đổi các trường nhận dạng thiết bị trong plist hệ thống. Hãy mở tệp cục bộ để chỉnh sửa các trường này."
+          }
+        },
+        "zh-Hant-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不能更改系統 plist 中的裝置身分欄位。如需編輯這些欄位，請開啟本機檔案。"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不能更改系統 plist 中的裝置身分欄位。如需編輯這些欄位，請開啟本機檔案。"
+          }
+        }
+      }
+    },
     "Keep Current": {
       "localizations": {
         "en": {
@@ -12065,6 +12117,58 @@
         }
       }
     },
+    "This backup already matches the device. No changes were made.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This backup already matches the device. No changes were made."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此备份已与设备一致，未作任何更改。"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این نسخهٔ پشتیبان از قبل با دستگاه مطابقت دارد. هیچ تغییری انجام نشد."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 백업은 이미 기기와 일치합니다. 변경 사항이 없습니다."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Эта резервная копия уже соответствует устройству. Изменения не внесены."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bản sao lưu này đã khớp với thiết bị. Không có thay đổi nào được thực hiện."
+          }
+        },
+        "zh-Hant-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此備份已與裝置一致，未作任何更改。"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此備份已與裝置一致，未作任何更改。"
+          }
+        }
+      }
+    },
     "Backup opened as a local document.": {
       "localizations": {
         "en": {
@@ -15133,6 +15237,58 @@
         }
       }
     },
+    "The original value belongs to a different cache layout. A matching backup is needed to restore it.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The original value belongs to a different cache layout. A matching backup is needed to restore it."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原值属于不同的缓存布局，需要匹配的备份才能恢复。"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مقدار اصلی متعلق به چیدمان دیگری از حافظهٔ پنهان است. برای بازیابی آن به نسخهٔ پشتیبان سازگار نیاز است."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "원래 값이 다른 캐시 레이아웃에 속합니다. 복원하려면 일치하는 백업이 필요합니다."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Исходное значение относится к другой структуре кэша. Для его восстановления нужна соответствующая резервная копия."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giá trị gốc thuộc một bố cục bộ nhớ đệm khác. Cần có bản sao lưu phù hợp để khôi phục."
+          }
+        },
+        "zh-Hant-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原值屬於不同的快取配置，需要相符的備份才能還原。"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原值屬於不同的快取配置，需要相符的備份才能還原。"
+          }
+        }
+      }
+    },
     "This preset changes unrelated cache bytes.": {
       "localizations": {
         "en": {
@@ -16065,6 +16221,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "無法在本機驗證此 plist 的裝置憑證。"
+          }
+        }
+      }
+    },
+    "The device proof is temporarily unavailable. Unlock this device and try again.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The device proof is temporarily unavailable. Unlock this device and try again."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设备凭证暂时不可用。请解锁此设备后重试。"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گواه دستگاه موقتاً در دسترس نیست. قفل این دستگاه را باز کنید و دوباره تلاش کنید."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기기 증명을 일시적으로 사용할 수 없습니다. 이 기기의 잠금을 해제한 후 다시 시도하세요."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подтверждение устройства временно недоступно. Разблокируйте устройство и повторите попытку."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bằng chứng thiết bị tạm thời không khả dụng. Hãy mở khóa thiết bị này rồi thử lại."
+          }
+        },
+        "zh-Hant-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "裝置憑證暫時無法使用。請解鎖此裝置後重試。"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "裝置憑證暫時無法使用。請解鎖此裝置後重試。"
           }
         }
       }
@@ -18717,6 +18925,214 @@
           "stringUnit": {
             "state": "translated",
             "value": "Khai báo hỗ trợ Hey Siri luôn lắng nghe."
+          }
+        }
+      }
+    },
+    "Internal Build": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internal Build"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内部构建"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلد داخلی"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내부 빌드"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Внутренняя сборка"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bản dựng nội bộ"
+          }
+        },
+        "zh-Hant-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "內部構建"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "內部組建"
+          }
+        }
+      }
+    },
+    "Changes the system-wide InternalBuild flag, not just storage information. System services may behave differently. Revert restores the recorded original value.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Changes the system-wide InternalBuild flag, not just storage information. System services may behave differently. Revert restores the recorded original value."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "修改系统全局的 InternalBuild 标记，并非仅调整存储信息。系统服务的行为可能发生变化。“还原”会恢复已记录的原始值。"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پرچم سراسری InternalBuild را تغییر می‌دهد، نه فقط اطلاعات فضای ذخیره‌سازی را. رفتار سرویس‌های سیستم ممکن است تغییر کند. بازگردانی، مقدار اصلی ثبت‌شده را بازیابی می‌کند."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장 공간 정보뿐 아니라 시스템 전체의 InternalBuild 플래그를 변경합니다. 시스템 서비스의 동작이 달라질 수 있습니다. 되돌리면 기록된 원래 값이 복원됩니다."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изменяет системный флаг InternalBuild, а не только сведения о хранилище. Поведение системных служб может измениться. Возврат восстанавливает записанное исходное значение."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thay đổi cờ InternalBuild trên toàn hệ thống, không chỉ thông tin bộ nhớ. Hoạt động của các dịch vụ hệ thống có thể thay đổi. Hoàn nguyên sẽ khôi phục giá trị gốc đã ghi lại."
+          }
+        },
+        "zh-Hant-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "修改系統全域的 InternalBuild 標記，並非只調整儲存空間資訊。系統服務的行為可能改變。「還原」會恢復已記錄的原始值。"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "修改系統全域的 InternalBuild 旗標，並非僅調整儲存空間資訊。系統服務的行為可能改變。「還原」會恢復已記錄的原始值。"
+          }
+        }
+      }
+    },
+    "Enable Internal Build?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable Internal Build?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用内部构建？"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بیلد داخلی فعال شود؟"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내부 빌드를 활성화할까요?"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Включить внутреннюю сборку?"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bật bản dựng nội bộ?"
+          }
+        },
+        "zh-Hant-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟用內部構建？"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啟用內部組建？"
+          }
+        }
+      }
+    },
+    "This stages the system-wide InternalBuild flag. It can affect system services beyond the storage screen. You can review the change before applying it.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This stages the system-wide InternalBuild flag. It can affect system services beyond the storage screen. You can review the change before applying it."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这会暂存系统全局的 InternalBuild 标记变更。它可能影响存储页面以外的系统服务。你可以在应用前检查这项变更。"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این کار تغییر پرچم سراسری InternalBuild را آماده می‌کند. اثر آن بر سرویس‌های سیستم ممکن است فراتر از صفحهٔ فضای ذخیره‌سازی باشد. پیش از اعمال، می‌توانید تغییر را بررسی کنید."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시스템 전체의 InternalBuild 플래그 변경을 준비합니다. 저장 공간 화면 이외의 시스템 서비스에도 영향을 줄 수 있습니다. 적용하기 전에 변경 사항을 검토할 수 있습니다."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Изменение системного флага InternalBuild будет подготовлено. Оно может затронуть службы за пределами экрана хранилища. Перед применением можно проверить изменение."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thao tác này đưa thay đổi cờ InternalBuild toàn hệ thống vào danh sách chờ. Nó có thể ảnh hưởng đến các dịch vụ ngoài màn hình bộ nhớ. Bạn có thể xem lại thay đổi trước khi áp dụng."
+          }
+        },
+        "zh-Hant-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這會暫存系統全域的 InternalBuild 標記變更。它可能影響儲存空間畫面以外的系統服務。你可以在套用前檢查這項變更。"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這會暫存系統全域的 InternalBuild 旗標變更。它可能影響儲存空間畫面以外的系統服務。你可以在套用前檢查這項變更。"
           }
         }
       }

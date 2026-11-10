@@ -37,6 +37,7 @@ struct Capability: Identifiable {
     /// Per-key values for presets that are not a plain Boolean 1, such as the
     /// parallax switch (0) or the AOD flipbook count.
     var values: [String: Any]? = nil
+    var requiresEnableConfirmation: Bool { id == "storage" }
     var effectHint: String {
         switch id {
         case "ai", "siriOnDevice", "audioIntelligence", "personalTranslator", "photosCleanUp",
@@ -61,6 +62,19 @@ struct Capability: Identifiable {
             case .removeAdded: document.set(nil, for: key)
             }
         }
+        if id == "dynamicIsland", choice == .disable || choice == .removeAdded {
+            restoreDynamicIslandLayout(in: &document, from: snapshot)
+        }
+    }
+
+    func restoreDynamicIslandLayout(in document: inout GestaltDocument, from snapshot: DocumentSnapshot) {
+        guard id == "dynamicIsland", var artwork = document.extra[GestaltKeys.artwork] as? [String: Any] else { return }
+        let original = snapshot.originalValue(for: GestaltKeys.artwork)
+        let originalArtwork = original as? [String: Any]
+        // Layout and model-name presets share this dictionary. Restore only the
+        // layout member so unrelated artwork edits keep their current values.
+        artwork["ArtworkDeviceSubType"] = originalArtwork?["ArtworkDeviceSubType"]
+        document.set(artwork.isEmpty && original == nil ? nil : artwork, for: GestaltKeys.artwork)
     }
     static let all: [Self] = [
         .init(id: "dynamicIsland", category: .display, title: "Dynamic Island", detail: "Enable the alternate Dynamic Island capability.", keys: ["YlEtTtHlNesRBMal1CqRaA"]),
@@ -93,7 +107,7 @@ struct Capability: Identifiable {
         .init(id: "handwritingSynthesis", category: .intelligence, title: "Handwriting Synthesis", detail: "Advertise the handwriting synthesis model capability.", keys: ["YgYIIViDt1kgzyIsIV61vA"], caution: true),
         .init(id: "alwaysListeningSiri", category: .intelligence, title: "Always-Listening Hey Siri", detail: "Advertise always-listening Hey Siri support.", keys: ["TusANsf9Lfe3P/9fIXXSrQ"], caution: true),
         .init(id: "internal", category: .advanced, title: "Apple Internal Features", detail: "Expose internal menus. Some system services may behave differently.", keys: ["EqrsVvjcYDdxHBiQmGhAWw"], caution: true),
-        .init(id: "storage", category: .advanced, title: "Internal Storage View", detail: "Show internal storage categories. Experimental on iPad.", keys: ["LBJfwOEzExRxzlAnSuI7eg"], caution: true),
+        .init(id: "storage", category: .advanced, title: "Internal Build", detail: "Changes the system-wide InternalBuild flag, not just storage information. System services may behave differently. Revert restores the recorded original value.", keys: ["LBJfwOEzExRxzlAnSuI7eg"], caution: true),
         .init(id: "srd", category: .advanced, title: "Security Research Device", detail: "Change the SRD capability flag. This does not turn the device into an Apple SRD.", keys: ["XYlJKKkj2hztRP1NWWnhlw"], caution: true),
         .init(id: "internalSettings", category: .advanced, title: "Internal Settings Bundle", detail: "Expose Apple's internal settings bundle. Some system services may behave differently.", keys: ["Oji6HRoPi7rH7HPdWVakuw"], caution: true),
     ]
