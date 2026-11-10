@@ -10,6 +10,9 @@ sources=(
   GestaltX/DevicePlistIdentity.swift GestaltX/DeviceBoundPlist.swift
   Shared/SharedPlistInbox.swift
 )
+for optional in ShareExtension/ItemProviderLoad.swift GestaltX/SharedImportQueue.swift; do
+  if [[ -f "$optional" ]]; then sources+=("$optional"); fi
+done
 for test in tests/*Tests.swift; do
   name="$(basename "$test" .swift)"
   echo "Running $name"
