@@ -1,0 +1,35 @@
+name: Contribution validation
+
+on:
+  push:
+    branches: [validation/gestaltx-20261110]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: xcode-27
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        ref: [main]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: harness
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ matrix.ref }}
+          path: source
+      - name: Run regression executables
+        working-directory: source
+        run: bash ../harness/.github/scripts/validate-contribution.sh
+      - name: Build the app and share extension
+        working-directory: source
+        run: |
+          xcodebuild -quiet -project GestaltX.xcodeproj -target GestaltX \
+            -configuration Debug -sdk iphonesimulator \
+            SYMROOT="$RUNNER_TEMP/gx-build" CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM="" build
