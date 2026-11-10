@@ -353,7 +353,7 @@ final class AccessTrace: @unchecked Sendable {
             "CacheExtra": ["VasUgeSzVyHdB27g2XpN0g": "fixture-device", GestaltKeys.productType: "iPhone17,1",
                            "integer": NSNumber(value: 1), "boolean": NSNumber(value: true),
                            "payload": Data([0, 1, 255]), "nested": ["array": [1, true, "text"]]],
-            "CacheData": Data([5, 10, 15]), "UnchangedTopLevel": "keep"
+            "CacheData": Data([5, 10, 15]), "CacheUUID": "fixture-layout", "CacheVersion": "fixture-version", "UnchangedTopLevel": "keep"
         ]
         let originalData = try PropertyListSerialization.data(fromPropertyList: original, format: .binary, options: 0)
         try await verifyPresetRestoration(data: originalData, directory: root.appendingPathComponent("absent-presets"))

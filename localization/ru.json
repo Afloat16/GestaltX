@@ -320,5 +320,6 @@
   "A3473 — 18 Pro Max · United States": "A3473 — 18 Pro Max · США",
   "A3716 — 18 Pro Max · Canada / Japan": "A3716 — 18 Pro Max · Канада / Япония",
   "A3717 — 18 Pro Max · Other regions": "A3717 — 18 Pro Max · Другие регионы",
-  "A3718 — 18 Pro Max · China mainland": "A3718 — 18 Pro Max · Материковый Китай"
+  "A3718 — 18 Pro Max · China mainland": "A3718 — 18 Pro Max · Материковый Китай",
+  "The artwork field is not a dictionary. Edit it in MG Control before using these presets.": "Поле artwork не является словарём. Отредактируйте его в MG Control перед использованием этих пресетов."
 }

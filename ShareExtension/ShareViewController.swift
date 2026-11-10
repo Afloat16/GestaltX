@@ -91,33 +91,34 @@ final class ShareViewController: UIViewController {
             throw firstError ?? SharedPlistError(key: "Choose a MobileGestalt plist with a CacheExtra dictionary.")
         }
         let suggestedName = provider.suggestedName
-        return try await withCheckedThrowingContinuation { continuation in
+        return try await ItemProviderLoad<(Data, String)>.load { request in
             provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, error in
-                do {
+                request.complete {
                     if let error { throw error }
                     let url = (item as? URL) ?? (item as? Data).flatMap { URL(dataRepresentation: $0, relativeTo: nil) }
                     guard let url else { throw SharedPlistError(key: "The shared plist could not be read. Share it again.") }
-                    continuation.resume(returning: (try SharedPlistInbox.readDocument(at: url), suggestedName ?? url.lastPathComponent))
-                } catch { continuation.resume(throwing: error) }
+                    return (try SharedPlistInbox.readDocument(at: url), suggestedName ?? url.lastPathComponent)
+                }
             }
+            return nil
         }
     }
 
     private func readFile(_ provider: NSItemProvider, type: String, inPlace: Bool) async throws -> (Data, String) {
         let suggestedName = provider.suggestedName
-        return try await withCheckedThrowingContinuation { continuation in
+        return try await ItemProviderLoad<(Data, String)>.load { request in
             let complete: @Sendable (URL?, Error?) -> Void = { url, error in
-                do {
+                request.complete {
                     if let error { throw error }
                     guard let url else { throw SharedPlistError(key: "The shared plist could not be read. Share it again.") }
                     let bytes = try SharedPlistInbox.readDocument(at: url)
-                    continuation.resume(returning: (bytes, suggestedName ?? url.lastPathComponent))
-                } catch { continuation.resume(throwing: error) }
+                    return (bytes, suggestedName ?? url.lastPathComponent)
+                }
             }
             if inPlace {
-                provider.loadInPlaceFileRepresentation(forTypeIdentifier: type) { url, _, error in complete(url, error) }
+                return provider.loadInPlaceFileRepresentation(forTypeIdentifier: type) { url, _, error in complete(url, error) }
             } else {
-                provider.loadFileRepresentation(forTypeIdentifier: type, completionHandler: complete)
+                return provider.loadFileRepresentation(forTypeIdentifier: type, completionHandler: complete)
             }
         }
     }
@@ -128,7 +129,7 @@ final class ShareViewController: UIViewController {
         while let current = responder {
             if let app = current as? UIApplication {
                 app.open(url, options: [:]) { [weak self] opened in
-                    guard let self else { return }
+                    guard let self, self.work?.isCancelled != true else { return }
                     if opened { self.finish() } else { self.showSaved() }
                 }
                 return

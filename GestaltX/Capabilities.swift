@@ -129,4 +129,24 @@ struct FieldDraft: Identifiable {
     var key = ""
     var kind = PlistValueKind.string
     var text = ""
+    private let originalValue: Any?
+    private let originalText: String?
+
+    init(originalKey: String? = nil, key: String = "", kind: PlistValueKind = .string,
+         text: String = "", originalValue: Any? = nil) {
+        self.originalKey = originalKey; self.key = key; self.kind = kind; self.text = text
+        self.originalValue = originalValue
+        self.originalText = originalValue == nil ? nil : text
+    }
+
+    func parsedValue() throws -> Any {
+        // Text formats can be less precise than a binary plist, including Date
+        // values nested inside an XML array or dictionary. A no-op edit or a
+        // key rename must preserve the exact value that populated the editor.
+        if let originalValue, kind == PlistValueKind.detect(originalValue),
+           text == originalText {
+            return originalValue
+        }
+        return try kind.parse(text)
+    }
 }

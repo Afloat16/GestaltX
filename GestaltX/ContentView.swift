@@ -60,14 +60,17 @@ struct ContentView: View {
             Button(L("Cancel"), role: .cancel) {
                 if let offer = importOffer { model.discardImport(offer) }
                 importOffer = nil
+                pendingSharedImport = true
             }
             Button(L("Import")) {
                 guard let offer = importOffer else { return }
                 isCheckingSharedImport = true
                 importOffer = nil
+                pendingSharedImport = true
                 Task {
                     await model.acceptImport(offer)
                     isCheckingSharedImport = false
+                    await resumeSharedImports()
                 }
             }
         } message: {
@@ -88,12 +91,22 @@ struct ContentView: View {
             if url.scheme?.lowercased() == "gestaltx", url.host == "share" {
                 Task { await checkSharedImport() }
             } else if url.isFileURL {
-                guard !model.isBusy, model.changeCount == 0 else {
-                    model.message = L("Save or discard your current changes before opening another plist.")
+                // Keep the currently displayed confirmation and its immutable
+                // payload until the user has accepted or cancelled it.
+                guard importOffer == nil, !showsImportConfirmation else { return }
+                guard !isCheckingSharedImport, !model.isBusy, model.changeCount == 0 else {
+                    if model.message == nil {
+                        model.message = L("Save or discard your current changes before opening another plist.")
+                    }
                     return
                 }
+                guard canPresentSharedImport else { return }
+                isCheckingSharedImport = true
                 Task {
-                    importOffer = await model.prepareFileImport(url)
+                    defer { isCheckingSharedImport = false }
+                    let prepared = await model.prepareFileImport(url)
+                    guard canPresentSharedImport else { return }
+                    importOffer = prepared
                     if importOffer != nil { selectedTab = 0; showsImportConfirmation = true }
                 }
             }
@@ -101,14 +114,10 @@ struct ContentView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active && !isPreviewSession { Task { await checkSharedImport() } }
         }
-        .onChange(of: model.isBusy) { _, busy in
-            if !busy && pendingSharedImport { Task { await checkSharedImport() } }
-        }
-        .onChange(of: model.changeCount) { _, count in
-            if count == 0 && pendingSharedImport { Task { await checkSharedImport() } }
-        }
-        .onChange(of: showsChanges) { _, shown in
-            if !shown && pendingSharedImport { Task { await checkSharedImport() } }
+        .onChange(of: canPresentSharedImport) { _, ready in
+            if ready && pendingSharedImport && !isCheckingSharedImport {
+                Task { await resumeSharedImports() }
+            }
         }
         .onChange(of: acceptedWelcome) { _, accepted in
             if accepted && !isPreviewSession { Task { await autoRead(); showShareNoticeIfNeeded() } }
@@ -157,19 +166,37 @@ struct ContentView: View {
         await model.connect(showErrorAlert: false)
     }
 
+    private var canPresentSharedImport: Bool {
+        acceptedWelcome && !model.isBusy && model.changeCount == 0 && importOffer == nil
+            && !showsImportConfirmation && !showsChanges && !model.isRespringing
+            && sharesFile == nil && !asksRespring && !asksImportedRestore
+            && !showsShareNotice && model.message == nil
+    }
+
+    private func resumeSharedImports() async {
+        guard acceptedWelcome, !isPreviewSession else { return }
+        if await checkSharedImport() { return }
+        // Initial automatic reading may have yielded to an import that was
+        // subsequently cancelled or rejected. Resume it when the queue empties.
+        if didAutoRead && !model.hasDocument && !model.isBusy {
+            await model.connect(showErrorAlert: false)
+        }
+    }
+
     @discardableResult
     private func checkSharedImport() async -> Bool {
         guard acceptedWelcome else { return false }
         guard !isCheckingSharedImport, importOffer == nil else { return true }
         do {
-            guard let (inbox, entry) = try SharedAppGroups.oldestEntry() else {
+            let entries = try SharedImportQueue.snapshot(in: SharedAppGroups.inboxes)
+            guard !entries.isEmpty else {
                 pendingSharedImport = false
                 return false
             }
-            guard !model.isBusy, model.changeCount == 0, !showsChanges, !model.isRespringing else {
+            guard canPresentSharedImport else {
                 let firstNotice = !pendingSharedImport
                 pendingSharedImport = true
-                if model.changeCount > 0 && firstNotice {
+                if model.changeCount > 0 && firstNotice && model.message == nil {
                     model.message = L("A shared plist is waiting. Save or discard your current changes, then import it.")
                 }
                 return true
@@ -179,9 +206,33 @@ struct ContentView: View {
             defer { isCheckingSharedImport = false }
             selectedTab = 0
             sharedImportNoticeShown = true
-            importOffer = await model.prepareSharedPlist(entry, from: inbox)
-            if importOffer != nil { showsImportConfirmation = true }
-            return true
+            let selection = await SharedImportQueue.next(in: entries) { inbox, entry in
+                guard canPresentSharedImport else { return .deferred(nil) }
+                return await model.prepareSharedPlist(entry, from: inbox)
+            }
+            switch selection {
+            case .ready(let offer):
+                // Verification may suspend while reading the device. Recheck
+                // presentation after that await; the unacknowledged inbox file
+                // remains available when the new modal/busy gate clears.
+                guard canPresentSharedImport else {
+                    pendingSharedImport = true
+                    return true
+                }
+                importOffer = offer
+                pendingSharedImport = true
+                showsImportConfirmation = true
+            case .deferred(let message):
+                // A UI/busy gate can resume automatically. An unavailable device
+                // identity waits for the next foreground/share event, avoiding
+                // an isBusy -> retry -> isBusy loop on the same retained file.
+                pendingSharedImport = message == nil
+                if let message { model.message = message }
+            case .empty(let lastRejection):
+                pendingSharedImport = false
+                if let lastRejection { model.message = lastRejection }
+            }
+            return selection.blocksAutomaticRead
         } catch {
             model.message = error.localizedDescription
             return true
@@ -266,7 +317,10 @@ struct CategoryView: View {
                         Text("iPhone 16 Pro Max · 2868").tag(2868)
                     }
                     .onChange(of: model.subtype) { _, value in if value != 0 { model.choices["dynamicIsland"] = .keep } }
-                }
+                    if let error = model.artworkEditingError {
+                        Text(error.localizedDescription).font(.caption).foregroundStyle(.secondary)
+                    }
+                }.disabled(model.artworkEditingError != nil)
             }
             if category == .device {
                 Section(L("Device Identity")) {
@@ -275,7 +329,10 @@ struct CategoryView: View {
                         TextField(L("Model Name"), text: $model.modelName).autocorrectionDisabled()
                         Text(L("A device restart may be required.")).font(.caption).foregroundStyle(.secondary)
                     }
-                }
+                    if let error = model.artworkEditingError {
+                        Text(error.localizedDescription).font(.caption).foregroundStyle(.secondary)
+                    }
+                }.disabled(model.artworkEditingError != nil)
             }
             if category == .intelligence {
                 Section {
@@ -429,7 +486,7 @@ struct FieldsView: View {
                         Button {
                             guard let value = model.preview?.extra[key] else { return }
                             let kind = PlistValueKind.detect(value)
-                            draft = FieldDraft(originalKey: key, key: key, kind: kind, text: kind.text(for: value))
+                            draft = FieldDraft(originalKey: key, key: key, kind: kind, text: kind.text(for: value), originalValue: value)
                         } label: {
                             VStack(alignment: .leading, spacing: 6) {
                                 HStack(alignment: .firstTextBaseline) {
@@ -573,6 +630,10 @@ struct BackupsView: View {
             Section {
                 Button { Task { await model.backup() } } label: { Label(L("Create Backup"), systemImage: "plus.circle.fill") }
                     .disabled(!model.hasDocument || model.isBusy)
+            } footer: {
+                if model.changeCount > 0 {
+                    Text(L("Save or discard your current changes before opening another plist."))
+                }
             }
             if model.backups.isEmpty {
                 ContentUnavailableView(L("No Backups"), systemImage: "externaldrive.badge.timemachine", description: Text(L("A backup is created before each write.")))
@@ -590,11 +651,12 @@ struct BackupsView: View {
                             .font(.caption).foregroundStyle(.secondary)
                         HStack {
                             Button(L("Open")) { Task { await model.openBackup(record) } }
+                                .disabled(model.changeCount > 0)
                             Spacer()
                             Button(L("Export")) { Task { if let url = await model.exportBackup(record) { share(url) } } }
                             Spacer()
                             Button(L("Restore")) { restores = record }
-                                .disabled(!model.hasDocument || (model.sourceIsDevice && record.source != .device))
+                                .disabled(model.changeCount > 0 || !model.hasDocument || (model.sourceIsDevice && record.source != .device))
                         }.font(.subheadline).buttonStyle(.borderless).padding(.top, 6)
                     }.padding(.vertical, 6)
                 }.swipeActions(allowsFullSwipe: false) { Button(L("Delete")) { deletes = record }.tint(.red) }
@@ -606,6 +668,7 @@ struct BackupsView: View {
         .alert(L("Restore this backup?"), isPresented: Binding(get: { restores != nil }, set: { if !$0 { restores = nil } })) {
             Button(L("Cancel"), role: .cancel) { restores = nil }
             Button(L("Restore")) { if let record = restores { Task { await model.restore(record) } }; restores = nil }
+                .disabled(model.isBusy || model.changeCount > 0)
         } message: { Text(L("The current document is backed up first. Device restores are verified after writing.")) }
         .alert(L("Delete this backup?"), isPresented: Binding(get: { deletes != nil }, set: { if !$0 { deletes = nil } })) {
             Button(L("Cancel"), role: .cancel) { deletes = nil }

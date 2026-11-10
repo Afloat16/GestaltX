@@ -88,6 +88,10 @@ final class GestaltManager: ObservableObject {
     var changeCount: Int { changeKeys.count + cacheDataChanges.count }
     var hasDocument: Bool { snapshot != nil }
     var sourceIsDevice: Bool { snapshot?.source == .device }
+    var artworkEditingError: GestaltFailure? {
+        guard let working, !working.canEditArtwork else { return nil }
+        return GestaltFailure("The artwork field is not a dictionary. Edit it in MG Control before using these presets.")
+    }
     var displayedName: String {
         working?.artwork["ArtworkDeviceProductDescription"] as? String ?? working?.extra["Z/dqyWS6OZTRy10UcmUAhw"] as? String ?? UIDevice.current.model
     }
@@ -96,12 +100,10 @@ final class GestaltManager: ObservableObject {
         for capability in Capability.all {
             capability.apply(choices[capability.id] ?? .keep, to: &doc, restoringFrom: snapshot)
         }
-        if subtype != 0 {
-            doc.setArtwork(NSNumber(value: subtype), for: "ArtworkDeviceSubType")
+        if subtype != 0, doc.setArtwork(NSNumber(value: subtype), for: "ArtworkDeviceSubType") {
             doc.set(NSNumber(value: true), for: "YlEtTtHlNesRBMal1CqRaA")
         }
-        if changesName {
-            doc.setArtwork(modelName.trimmingCharacters(in: .whitespacesAndNewlines), for: "ArtworkDeviceProductDescription")
+        if changesName, doc.setArtwork(modelName.trimmingCharacters(in: .whitespacesAndNewlines), for: "ArtworkDeviceProductDescription") {
             doc.set(modelName.trimmingCharacters(in: .whitespacesAndNewlines), for: "Z/dqyWS6OZTRy10UcmUAhw")
             doc.set(modelName.trimmingCharacters(in: .whitespacesAndNewlines), for: "bbtR9jQx50Fv5Af/affNtA")
         }
@@ -332,20 +334,23 @@ final class GestaltManager: ObservableObject {
         return (bytes, trusted)
     }
 
-    func prepareSharedPlist(_ entry: SharedPlistEntry, from inbox: SharedPlistInbox) async -> PlistImportOffer? {
-        guard !isBusy, changeCount == 0 else { return nil }
+    func prepareSharedPlist(_ entry: SharedPlistEntry, from inbox: SharedPlistInbox) async -> SharedImportPreparation<PlistImportOffer> {
+        guard !isBusy, changeCount == 0 else { return .deferred(nil) }
         isBusy = true
         defer { isBusy = false }
         do {
             let bytes = try inbox.read(entry)
             let (payload, identity) = try await verifyImport(bytes)
             log("[share] Device ownership verified; waiting for import confirmation")
-            return PlistImportOffer(data: payload, name: entry.name, identity: identity, sharedSource: (inbox, entry))
+            return .ready(PlistImportOffer(data: payload, name: entry.name, identity: identity, sharedSource: (inbox, entry)))
         } catch {
             // A lack of device access may be temporary; keep that entry for retry.
-            if (error as? SharedPlistError)?.key != DevicePlistIdentity.unavailable.key { inbox.reject(entry) }
-            failed(error)
-            return nil
+            log("[share] " + error.localizedDescription)
+            if (error as? SharedPlistError)?.key == DevicePlistIdentity.unavailable.key {
+                return .deferred(error.localizedDescription)
+            }
+            inbox.reject(entry)
+            return .rejected(error.localizedDescription)
         }
     }
 
@@ -404,7 +409,7 @@ final class GestaltManager: ObservableObject {
         guard !key.isEmpty else { throw GestaltFailure("Enter a field key.") }
         guard var doc = working else { throw GestaltFailure("Load a document first.") }
         if draft.originalKey != key && doc.extra[key] != nil { throw GestaltFailure("That key already exists. Edit the existing field instead.") }
-        let value = try draft.kind.parse(draft.text)
+        let value = try draft.parsedValue()
         if let originalKey = draft.originalKey, originalKey != key { doc.set(nil, for: originalKey) }
         doc.set(value, for: key); working = doc
         // Explicit field edits take precedence: discard presets that would overwrite the key.
@@ -425,7 +430,9 @@ final class GestaltManager: ObservableObject {
     }
 
     func apply() async {
-        guard !isBusy, let snapshot, let edited = preview, changeCount > 0 else { return }
+        guard !isBusy, let snapshot, let edited = preview else { return }
+        if (changesName || subtype != 0), let error = artworkEditingError { failed(error); return }
+        guard changeCount > 0 else { return }
         if changesName && modelName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { failed(GestaltFailure("Enter a model name before applying.")); return }
         isBusy = true
         defer { isBusy = false }
@@ -455,6 +462,10 @@ final class GestaltManager: ObservableObject {
     }
     func restore(_ record: BackupRecord) async {
         guard !isBusy, let snapshot else { return }
+        guard changeCount == 0 else {
+            message = L("Save or discard your current changes before opening another plist.")
+            return
+        }
         isBusy = true; defer { isBusy = false }
         do {
             let data = try await files.backupData(record)
@@ -469,6 +480,10 @@ final class GestaltManager: ObservableObject {
     }
     func openBackup(_ record: BackupRecord) async {
         guard !isBusy else { return }
+        guard changeCount == 0 else {
+            message = L("Save or discard your current changes before opening another plist.")
+            return
+        }
         isBusy = true; defer { isBusy = false }
         do {
             let data = try await files.backupData(record)

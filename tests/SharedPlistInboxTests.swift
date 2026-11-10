@@ -1,4 +1,5 @@
 import Foundation
+import Darwin
 
 struct InboxTestFailure: Error { let message: String }
 func check(_ condition: Bool, _ message: String) throws {
@@ -62,6 +63,22 @@ func rejects(_ message: String, _ body: () throws -> Void) throws {
         try fm.createSymbolicLink(at: thirdPayload, withDestinationURL: source)
         try rejects("Reject symlinked queue documents") { _ = try restarted.read(third) }
         try check(try Data(contentsOf: source) == binary, "Rejected queue links cannot change the source")
+        let special = try SharedPlistInbox(container: group, namespace: "special-files")
+        let metadataEntry = try special.enqueue(binary, name: "metadata.plist")
+        let metadata = special.directory.appendingPathComponent(metadataEntry.id.uuidString).appendingPathComponent("entry.json")
+        let savedMetadata = root.appendingPathComponent("saved-entry.json")
+        try fm.moveItem(at: metadata, to: savedMetadata)
+        try fm.createSymbolicLink(at: metadata, withDestinationURL: savedMetadata)
+        try check(try special.entries().isEmpty, "Ignore symlinked metadata instead of following it")
+        try fm.removeItem(at: metadata)
+        let madeFIFO = metadata.withUnsafeFileSystemRepresentation { mkfifo($0!, 0o600) }
+        try check(madeFIFO == 0, "Create a named-pipe metadata fixture")
+        try check(try special.entries().isEmpty, "A metadata FIFO with no writer must not block the inbox scan")
+        try rejects("Reject a document FIFO without waiting for a writer") { _ = try SharedPlistInbox.readDocument(at: metadata) }
+        try rejects("Reject directories as documents") { _ = try SharedPlistInbox.readDocument(at: root) }
+        try fm.removeItem(at: metadata)
+        try fm.moveItem(at: savedMetadata, to: metadata)
+        try check(try special.read(metadataEntry) == binary, "Normal documents remain readable after malformed queue entries")
         print("PASS: share-inbox binary/XML validation, bounded reads, atomic handoff, cold-start recovery, re-signed namespaces, duplicate names, isolated acknowledgement and corrupt-file quarantine.")
     }
 }

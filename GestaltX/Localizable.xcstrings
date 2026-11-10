@@ -16744,6 +16744,58 @@
           }
         }
       }
+    },
+    "The artwork field is not a dictionary. Edit it in MG Control before using these presets.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The artwork field is not a dictionary. Edit it in MG Control before using these presets."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "artwork 字段不是字典，请先在 MG 控制中编辑此字段，再使用这些预设。"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فیلد artwork از نوع دیکشنری نیست. پیش از استفاده از این پیش‌تنظیم‌ها، آن را در MG Control ویرایش کنید."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "artwork 필드가 사전 형식이 아닙니다. 이 프리셋을 사용하기 전에 MG Control에서 수정하십시오."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поле artwork не является словарём. Отредактируйте его в MG Control перед использованием этих пресетов."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trường artwork không phải là từ điển. Hãy chỉnh sửa trường này trong MG Control trước khi dùng các thiết lập sẵn này."
+          }
+        },
+        "zh-Hant-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "artwork 欄位不是字典，請先在 MG 控制中編輯此欄位，再使用這些預設。"
+          }
+        },
+        "zh-Hant-TW": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "artwork 欄位不是字典，請先在 MG 控制中編輯此欄位，再使用這些預設。"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

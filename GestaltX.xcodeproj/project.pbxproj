@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4590AC67EAB2441BAD0E6ED1 /* ItemProviderLoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4C01D754C14C8B9BB28F96 /* ItemProviderLoad.swift */; };
 		0984A2204DCE106EB57ABBA5 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = C4D44512A7F31C4F05AD18C7 /* Localizable.xcstrings */; };
 		2A78BFEA3F79682B43C6174D /* GestaltXShare.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 9EABFACA1DBDA148BE33107B /* GestaltXShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		4DD89F9BEC1BCAEA76190943 /* GXEntitlementsReader.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B26403D3B2CF0AF602120A /* GXEntitlementsReader.m */; };
@@ -43,6 +44,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1E4C01D754C14C8B9BB28F96 /* ItemProviderLoad.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ItemProviderLoad.swift; sourceTree = "<group>"; };
 		2EF2633193BB80FFC35C8F39 /* App-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "App-Info.plist"; sourceTree = "<group>"; };
 		3657C2D9303730E800908AE2 /* GestaltX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GestaltX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		46D0711BAB4A7CD14E7A3BEE /* ShareExtension-Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ShareExtension-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 		549A67A15B582DE039CCAEE7 /* ShareExtension */ = {
 			isa = PBXGroup;
 			children = (
+				1E4C01D754C14C8B9BB28F96 /* ItemProviderLoad.swift */,
 				CF236E708DA867CE2ABD1DD3 /* ShareViewController.swift */,
 				E1681AAB87AE6E250D09FCD4 /* Info.plist */,
 				A1AF8FCEFCC842955E10C577 /* GestaltXShare.entitlements */,
@@ -269,6 +272,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4590AC67EAB2441BAD0E6ED1 /* ItemProviderLoad.swift in Sources */,
 				62ED10EDA2F9C8B69DEC64B2 /* SharedPlistInbox.swift in Sources */,
 				C0E60E90A46F41C928987332 /* SharedAppGroups.swift in Sources */,
 				4DD89F9BEC1BCAEA76190943 /* GXEntitlementsReader.m in Sources */,

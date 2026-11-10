@@ -330,6 +330,7 @@ A3473 — 18 Pro Max · United States	A3473 — 18 Pro Max · 美国
 A3716 — 18 Pro Max · Canada / Japan	A3716 — 18 Pro Max · 加拿大／日本
 A3717 — 18 Pro Max · Other regions	A3717 — 18 Pro Max · 其他地区
 A3718 — 18 Pro Max · China mainland	A3718 — 18 Pro Max · 中国大陆
+The artwork field is not a dictionary. Edit it in MG Control before using these presets.	artwork 字段不是字典，请先在 MG 控制中编辑此字段，再使用这些预设。
 '''
 entries = {}
 for line in TRANSLATIONS.strip().splitlines():
