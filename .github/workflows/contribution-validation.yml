@@ -16,14 +16,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: fix/preserve-field-value-precision
-            ref: 27eee326fa6a86e6c0dd9c39d3122f4a264f6743
-          - name: fix/preserve-malformed-artwork
-            ref: 9c58ffd2c44cf99232ff98ddae4fdb933bfdeb8e
+          - name: fix/coordinated-plist-imports
+            ref: 2f6a105206d835c9318f520c036790a511e8a972
           - name: fix/drain-shared-import-queue
-            ref: adde61dcc3683e7bb7262a69dc23cc813f0f1dd6
+            ref: 0a6db9afc8cf317e82a1108e0babe294b48a815d
           - name: validation/combined-fixes
-            ref: d28b19a7632a70ec6a74a48ab83b587d57431ff2
+            ref: 5dd106c9fd3779cbeb495bf4a6d4b81e653062cc
     steps:
       - uses: actions/checkout@v7
         with:
@@ -42,3 +40,19 @@ jobs:
             -configuration Debug -sdk iphonesimulator \
             SYMROOT="$RUNNER_TEMP/gx-build" CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM="" build
+
+
+  baseline-reproductions:
+    name: Reproduce original defects
+    runs-on: xcode-27
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Compile original production code and reproduce the defects
+        env:
+          GX_RUN_FIXED: 0
+        run: bash .github/scripts/baseline-reproduction.sh "$GITHUB_WORKSPACE" "$RUNNER_TEMP/baseline-evidence"
+      - name: Print exact regression evidence
+        run: cat "$RUNNER_TEMP/baseline-evidence/results.jsonl"
