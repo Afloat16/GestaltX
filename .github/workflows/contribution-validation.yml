@@ -16,22 +16,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: fix/unsigned-integer-values
-            ref: 5a661357c3b82d1588c9e6bc658cd4a844cec48a
-          - name: fix/backup-layout-validation
-            ref: 40041328d0b4501f4865a4ae60e165bed8058565
           - name: fix/preserve-field-value-precision
-            ref: 98e99b20614b7c6fc31c88971e26c9b67fa172a7
-          - name: fix/backup-content-integrity
-            ref: a60714267a31d5c343838498928498a5e6e3e96e
-          - name: fix/shared-inbox-regular-files
-            ref: 3f6bae17429f009572fb647c5be1ca93679183cf
-          - name: fix/coordinated-plist-imports
-            ref: a66f700f5f9d05d59079af7e4c45d22361ff470d
-          - name: fix/cancel-share-provider-loads
-            ref: 87ecffdf1d1961f049d47b1bfa6ddc70577f702c
-          - name: fix/backup-pending-edits
-            ref: 230cfec9dc7aa79da7044ff3f35dfa50216292a3
+            ref: 27eee326fa6a86e6c0dd9c39d3122f4a264f6743
+          - name: fix/preserve-malformed-artwork
+            ref: 9c58ffd2c44cf99232ff98ddae4fdb933bfdeb8e
+          - name: fix/drain-shared-import-queue
+            ref: adde61dcc3683e7bb7262a69dc23cc813f0f1dd6
+          - name: validation/combined-fixes
+            ref: d28b19a7632a70ec6a74a48ab83b587d57431ff2
     steps:
       - uses: actions/checkout@v7
         with:
