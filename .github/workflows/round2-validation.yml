@@ -5,12 +5,27 @@ on:
 permissions:
   contents: read
 jobs:
-  foundation-probe:
+  native:
+    name: ${{ matrix.label }}
     runs-on: xcode-27
-    timeout-minutes: 15
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        include: [{"label":"preserve-app-group-caches","sha":"8ddebc07c6ef0f01aa24b567de4c364d31a69932","tests":"[\"tests/CacheDirectoryTests.m\"]"},{"label":"reset-restored-local-provenance","sha":"5f7f4972501a366c442c2908cb81272aba9e15d7","tests":"[\"tests/LocalRestoreProvenanceTests.swift\"]"},{"label":"preserve-device-identity-fields","sha":"39209188d32689faa6189338ff11fef0df06529f","tests":"[\"tests/DeviceIdentityEditTests.swift\"]"},{"label":"skip-unchanged-device-restores","sha":"bb9d500b30b666eb827d4acd04c1b99b0fb76f2a","tests":"[\"tests/UnchangedRestoreTests.swift\"]"},{"label":"preserve-backup-on-delete-failure","sha":"9c6d7e4c6a94d3fd4283f48779e1448a2a025295","tests":"[\"tests/BackupDeletionTests.swift\"]"},{"label":"reject-malformed-cache-descriptors","sha":"c95d107d19b4aa5432ee2f19998b63fa8e5a65d8","tests":"[\"tests/MalformedCacheDescriptorTests.swift\"]"},{"label":"restore-dynamic-island-layout","sha":"9a56d6d789dbbac6cbc84f27d4280851ca65cbc6","tests":"[\"tests/DynamicIslandRestorationTests.swift\"]"},{"label":"seal-owned-backup-exports","sha":"194254086a5fe98833b43970c64351a791c7c313","tests":"[\"tests/BackupExportProofTests.swift\"]"},{"label":"isolate-shared-inboxes","sha":"d6b7cc084fde4a87b1fa82eb353a572d26472105","tests":"[\"tests/SharedInboxIsolationTests.swift\"]"},{"label":"bound-shared-metadata-names","sha":"dd08abf1088f1bd30b3f20a748f5904a72ea5358","tests":"[\"tests/SharedMetadataNameTests.swift\"]"},{"label":"confine-shared-inbox-paths","sha":"6b1ea0cecd275003fbdded13249f6a6aa877b5fe","tests":"[\"tests/SharedInboxContainmentTests.swift\"]"},{"label":"complete-original-history-migration","sha":"47d37a5a43a0dae1f2d7c408677776a5be116bc6","tests":"[\"tests/DocumentTests.swift\",\"tests/OriginalHistoryMigrationTests.swift\",\"tests/WAPITests.swift\"]"},{"label":"clean-up-export-artifacts","sha":"f0e65aeb367606b977e754baea5c5e1305d12683","tests":"[\"tests/TemporaryExportTests.swift\"]"},{"label":"confirm-internal-build-preset","sha":"3239c6a39960078d2d823918de28cd42b38ec33c","tests":"[\"tests/CapabilityCatalogTests.swift\"]"},{"label":"upstream-baseline","sha":"c6c22fc44da67e5c22e6fd7cf00a1cece4b4376d","tests":"[]"}]
     steps:
       - uses: actions/checkout@v7
-      - name: Reproduce Foundation NaN comparison
-        run: |
-          swiftc -swift-version 5 -parse-as-library GestaltX/Capabilities.swift GestaltX/MobileGestaltCacheLayout.swift GestaltX/DeviceCacheOptions.swift GestaltX/GestaltDocument.swift Shared/SharedPlistInbox.swift GestaltX/DeviceBoundPlist.swift validation/NaNFoundationProbe.swift -o "$RUNNER_TEMP/gx-nan-probe"
-          python3 -c 'import subprocess,os; subprocess.run([os.environ["RUNNER_TEMP"]+"/gx-nan-probe"],check=True,timeout=90)'
+        with:
+          path: harness
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ matrix.sha }}
+          path: source
+      - name: Compile and run regression tests
+        env:
+          GX_TESTS: ${{ matrix.tests }}
+        run: python3 harness/validation/run_native.py source
+      - name: Build iOS simulator app and extension
+        working-directory: source
+        run: xcodebuild -quiet -project GestaltX.xcodeproj -target GestaltX -configuration Debug -sdk iphonesimulator SYMROOT="$RUNNER_TEMP/gx-build" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM="" build
