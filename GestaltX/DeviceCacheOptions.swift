@@ -38,7 +38,7 @@ struct CachedOptionsOriginal: Codable, Equatable, Sendable {
 
     func flags(in document: GestaltDocument) throws -> CachedOptionFlags {
         _ = try DeviceCacheOptions.validatedData(in: document)
-        guard document.cacheUUID == layoutUUID.uppercased() else {
+        guard document.matchesCacheUUID(layoutUUID) else {
             throw GestaltFailure("The original value belongs to a different cache layout. A matching backup is needed to restore it.")
         }
         return flags
@@ -155,7 +155,7 @@ struct WAPIOriginal: Codable, Equatable, Sendable {
     }
     func value(in document: GestaltDocument) throws -> Bool {
         _ = try DeviceCacheOptions.wapi(in: document)
-        guard document.cacheUUID == layoutUUID.uppercased() else {
+        guard document.matchesCacheUUID(layoutUUID) else {
             throw GestaltFailure("The original value belongs to a different cache layout. A matching backup is needed to restore it.")
         }
         return enabled
