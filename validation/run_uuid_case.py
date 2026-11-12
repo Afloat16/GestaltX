@@ -26,7 +26,7 @@ EXPECTED = {
 }
 EXISTING = [
     "DocumentTests", "OriginalCacheGenerationTests", "BackupLayoutTests",
-    "WAPITests", "OriginalHistoryMigrationTests", "UnchangedRestoreTests",
+    "OriginalHistoryMigrationTests", "UnchangedRestoreTests",
     "LocalRestoreProvenanceTests", "DeviceIdentityEditTests", "SiriCapabilityTests",
 ]
 
@@ -71,10 +71,15 @@ def compile_test(repo, source_ref, test_ref, test_path, root):
         provenance.append(details)
     test, details = export(repo, test_ref, test_path, root / "regression")
     provenance.append(details)
+    test_paths = [str(test)]
+    if test_path == "tests/DocumentTests.swift":
+        helper, details = export(repo, test_ref, "tests/WAPITests.swift", root / "regression")
+        test_paths.append(str(helper))
+        provenance.append(details)
     (root / "provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
     binary = root / "test"
     compiled = run(["swiftc", "-swift-version", "5", "-parse-as-library", *paths,
-                    str(test), "-o", str(binary)], root, "compile", 180)
+                    *test_paths, "-o", str(binary)], root, "compile", 180)
     if compiled["returncode"] != 0:
         print(compiled["stderr"], flush=True)
         raise RuntimeError(f"Compilation failed for {source_ref} / {test_path}")
