@@ -268,20 +268,40 @@ final class GestaltManager: ObservableObject {
     }
 
     private func diffLines(_ before: [String: Any], _ after: [String: Any], prefix: String = "") -> [String] {
+        enum Difference { case line(String), nested([String]) }
+        var changes: [(key: String, value: Difference)] = []
+        func path(_ key: String) -> String { prefix.isEmpty ? key : prefix + "." + key }
+        var matched = 0
+        for (key, oldValue) in before {
+            guard let newValue = after[key] else {
+                changes.append((key, .line("- \(path(key))  (was \(describe(oldValue)))")))
+                continue
+            }
+            matched += 1
+            if let oldDict = oldValue as? [String: Any], let newDict = newValue as? [String: Any] {
+                // Recursion identifies changed members directly; comparing
+                // the whole dictionary first would traverse it again.
+                let nested = diffLines(oldDict, newDict, prefix: path(key))
+                if !nested.isEmpty { changes.append((key, .nested(nested))) }
+            } else if !GestaltDocument.valuesEqual(oldValue, newValue) {
+                changes.append((key, .line("~ \(path(key)): \(describe(oldValue)) → \(describe(newValue))")))
+            }
+        }
+        // A second walk is needed only if some destination keys were not
+        // encountered above. Ordinary value edits have no added keys.
+        if matched < after.count {
+            for (key, value) in after where before[key] == nil {
+                changes.append((key, .line("+ \(path(key)) = \(describe(value))")))
+            }
+        }
+        // Preserve the existing depth-first key order, sorting only branches
+        // that actually produced log messages.
+        changes.sort { $0.key < $1.key }
         var lines: [String] = []
-        for key in Set(before.keys).union(after.keys).sorted() {
-            let path = prefix.isEmpty ? key : prefix + "." + key
-            switch (before[key], after[key]) {
-            case (nil, let value?): lines.append("+ \(path) = \(describe(value))")
-            case (let value?, nil): lines.append("- \(path)  (was \(describe(value)))")
-            case (let oldValue?, let newValue?):
-                guard !GestaltDocument.valuesEqual(oldValue, newValue) else { continue }
-                if let oldDict = oldValue as? [String: Any], let newDict = newValue as? [String: Any] {
-                    lines.append(contentsOf: diffLines(oldDict, newDict, prefix: path))
-                } else {
-                    lines.append("~ \(path): \(describe(oldValue)) → \(describe(newValue))")
-                }
-            default: break
+        for (_, difference) in changes {
+            switch difference {
+            case .line(let line): lines.append(line)
+            case .nested(let nested): lines.append(contentsOf: nested)
             }
         }
         return lines

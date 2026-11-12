@@ -1,0 +1,37 @@
+name: Document diff native regression validation
+
+on:
+  push:
+    branches: [validation/gestaltx-document-diff-20261112]
+
+permissions:
+  contents: read
+
+jobs:
+  native-regressions:
+    runs-on: xcode-27
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Record native toolchain
+        run: |
+          uname -s
+          xcodebuild -version
+          swiftc --version
+      - name: Reproduce the original defects and run revised regressions
+        run: python3 validation/run_document_diff.py --repo . --base 6a8f94de9673460bb78548855a524817122d7752 --output "$RUNNER_TEMP/document-diff-evidence" --comparison-core 5703c9a0b00299beab510d9e2b4ab33536c1bed6
+      - name: Build the app and share extension
+        run: |
+          xcodebuild -quiet -project GestaltX.xcodeproj -target GestaltX \
+            -configuration Debug -sdk iphonesimulator \
+            SYMROOT="$RUNNER_TEMP/document-diff-build" CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM="" build
+      - name: Preserve source provenance and test logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: document-diff-regression-evidence
+          path: ${{ runner.temp }}/document-diff-evidence
+          retention-days: 14
