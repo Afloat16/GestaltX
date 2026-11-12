@@ -46,6 +46,12 @@ enum PlistValueKind: String, CaseIterable, Identifiable, Sendable {
             default: throw GestaltFailure("Use true or false for a Boolean value.")
             }
         case .date:
+            // The formatter can accept a valid date prefix and ignore trailing
+            // text. Field edits must consume the complete value the user entered.
+            let pattern = #"^[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt][0-9]{2}:[0-9]{2}:[0-9]{2}(?:\.[0-9]+)?(?:[Zz]|[+-][0-9]{2}:?[0-9]{2})$"#
+            guard trimmed.range(of: pattern, options: .regularExpression) != nil else {
+                throw GestaltFailure("Enter an ISO 8601 date, such as 2026-11-09T12:00:00Z.")
+            }
             let formatter = ISO8601DateFormatter()
             formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
             if let value = formatter.date(from: trimmed) { return value }
