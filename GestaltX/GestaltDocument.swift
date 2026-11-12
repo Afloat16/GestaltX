@@ -99,6 +99,7 @@ enum GestaltKeys {
 struct GestaltDocument: @unchecked Sendable {
     private(set) var root: [String: Any]
     var extra: [String: Any] { root["CacheExtra"] as? [String: Any] ?? [:] }
+    var cacheUUID: String? { (root["CacheUUID"] as? String)?.uppercased() }
     var artwork: [String: Any] { extra[GestaltKeys.artwork] as? [String: Any] ?? [:] }
     var canEditArtwork: Bool { extra[GestaltKeys.artwork] == nil || extra[GestaltKeys.artwork] is [String: Any] }
 
@@ -459,14 +460,14 @@ actor GestaltFileStore {
         if let stored = plist["unavailableCacheOriginals"] as? [String: Any] {
             for (key, value) in stored {
                 // Read the earlier single-UUID representation as a one-item set.
-                if let uuid = value as? String { unavailable[key] = [uuid] }
-                else if let uuids = value as? [String] { unavailable[key] = Set(uuids) }
+                if let uuid = value as? String { unavailable[key] = [uuid.uppercased()] }
+                else if let uuids = value as? [String] { unavailable[key] = Set(uuids.map { $0.uppercased() }) }
                 else { throw GestaltFailure("Original values could not be read. No system changes were made.") }
             }
         }
-        let currentUUID = document.root["CacheUUID"] as? String ?? ""
-        let migrateAudio = audio.map { $0.layoutUUID != currentUUID } == true && !(unavailable["faceTimeAudio"]?.contains(currentUUID) ?? false)
-        let migrateWAPI = wapi.map { $0.layoutUUID != currentUUID } == true && !(unavailable["wapi"]?.contains(currentUUID) ?? false)
+        let currentUUID = document.cacheUUID ?? ""
+        let migrateAudio = audio.map { $0.layoutUUID.uppercased() != currentUUID } == true && !(unavailable["faceTimeAudio"]?.contains(currentUUID) ?? false)
+        let migrateWAPI = wapi.map { $0.layoutUUID.uppercased() != currentUUID } == true && !(unavailable["wapi"]?.contains(currentUUID) ?? false)
         if migrateAudio || migrateWAPI {
             let baseline = try recoverCacheBaseline(from: document)
             if migrateAudio {
@@ -490,6 +491,8 @@ actor GestaltFileStore {
         for key in ["CacheUUID", "CacheVersion"] {
             switch (document.root[key], current.root[key]) {
             case (nil, nil): continue
+            case (let old as String, let live as String)
+                where key == "CacheUUID" && old.caseInsensitiveCompare(live) == .orderedSame: continue
             case (let old?, let live?) where GestaltDocument.valuesEqual(old, live): continue
             default: return false
             }
@@ -634,8 +637,8 @@ actor GestaltFileStore {
 
     private func validateRestoreLayout(_ document: GestaltDocument, against current: GestaltDocument) throws {
         let failure = GestaltFailure("This plist uses a different system cache layout and cannot be restored.")
-        guard let uuid = document.root["CacheUUID"] as? String, !uuid.isEmpty,
-              current.root["CacheUUID"] as? String == uuid,
+        guard let uuid = document.cacheUUID, !uuid.isEmpty,
+              current.cacheUUID == uuid,
               let data = document.root["CacheData"] as? Data,
               let currentData = current.root["CacheData"] as? Data, data.count == currentData.count else {
             throw failure
