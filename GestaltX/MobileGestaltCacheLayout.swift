@@ -65,9 +65,12 @@ struct MobileGestaltCacheLayout: Codable, Equatable, Sendable {
         var hashes: [UInt64: Key] = [:]
         var uuids = Set<String>()
         strings.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) in
+            let base = bytes.baseAddress!.assumingMemoryBound(to: UInt8.self)
             var start = 0
-            for end in bytes.indices where bytes[end] == 0 {
-                let token = bytes[start..<end]
+            while start < bytes.count {
+                guard let terminator = memchr(base.advanced(by: start), 0, bytes.count - start) else { break }
+                let end = base.distance(to: UnsafePointer(terminator.assumingMemoryBound(to: UInt8.self)))
+                let token = UnsafeBufferPointer(start: base.advanced(by: start), count: end - start)
                 if token.count == 22 && token.allSatisfy({
                     (65...90).contains($0) || (97...122).contains($0) || (48...57).contains($0) || $0 == 43 || $0 == 47
                 }) {
