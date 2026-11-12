@@ -1,0 +1,243 @@
+[
+  {
+    "item": 1,
+    "source": "ml_geometry_v2/gestaltx_uuid",
+    "source_sha": "98072a2eb255446b0dd84ade573da425d86ca3bf",
+    "tree": "cb24ebfc459d2dd05976836a349e164cb9f585d4",
+    "integration_input_commit": "742fb188355d045f85faafb9a52a1675c5db2d31",
+    "files": [
+      {
+        "path": "GestaltX/DeviceCacheOptions.swift",
+        "blob": "6b61939234b0e854295402f03977d9bc8c92abca",
+        "mode": "100644"
+      },
+      {
+        "path": "GestaltX/GestaltDocument.swift",
+        "blob": "ed523d4688d5801bcd9f3a910b3ff9b67ef0dbdf",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/CacheUUIDCaseTests.swift",
+        "blob": "16736d3e23dafb3b0387e179e3fadf5fcff638ba",
+        "mode": "100644"
+      }
+    ],
+    "published_sha": "98072a2eb255446b0dd84ade573da425d86ca3bf"
+  },
+  {
+    "item": 2,
+    "source": "ml_geometry_v2/gestaltx_date_input",
+    "source_sha": "85614d79f5d8621c553b66ec53aa5e70a5f56eda",
+    "tree": "99685ded56fa4d6813bb9d82c04c87c51c547228",
+    "integration_input_commit": "1e7b1c467d3162fe23f838dda01ead0187d04e2c",
+    "files": [
+      {
+        "path": "GestaltX/GestaltDocument.swift",
+        "blob": "2cdfd74fbf30995dfc6d64cc365d3f7c146eb4e8",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/DateInputTests.swift",
+        "blob": "350ffb19ea44d9d90c7d531cd9b6a73cf01d4d28",
+        "mode": "100644"
+      }
+    ],
+    "published_sha": "85614d79f5d8621c553b66ec53aa5e70a5f56eda"
+  },
+  {
+    "item": 3,
+    "source": "root_work_v2/GestaltX",
+    "source_sha": "e68c360b4acbc0d3a3e82f831d521810ad3ea44e",
+    "tree": "5f75c88bcca0d6fe57134f84365811268219638b",
+    "integration_input_commit": "fdae87035b65cf993e119d50f6f8185c0df3defd",
+    "files": [
+      {
+        "path": "ShareExtension/ShareViewController.swift",
+        "blob": "5178f3f07646edc6f6d6fe44a02db8c7abd10a8e",
+        "mode": "100644"
+      },
+      {
+        "path": "Shared/SharedPlistInbox.swift",
+        "blob": "f2928b4ad11bf25681dee46c8c6080776cf4a0a6",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/SharedInboxPublicationTests.swift",
+        "blob": "8cd1c4d11fe66a7ec0d56e54f737ae959e4ebcff",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/run_shared_publication.py",
+        "blob": "a67bfb06d4c2fa798d50d0c46886ba9aead889b8",
+        "mode": "100644"
+      }
+    ],
+    "published_sha": "9f1562bf0712bef36df13df47908216506535b8e"
+  },
+  {
+    "item": 4,
+    "source": "root_work_v2/GestaltX-backups",
+    "source_sha": "91902761746659c0ddf74884a78c571cad5f20c7",
+    "tree": "9305f09dda703ac77007ea6e67a123aed076b330",
+    "integration_input_commit": "bf093a5475bff933153110173724d635aa529b95",
+    "files": [
+      {
+        "path": "GestaltX/GestaltDocument.swift",
+        "blob": "4375a8d7b488fd0cdfd66ad000dbbcc7d8579b39",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/BackupMetadataIdentityTests.swift",
+        "blob": "1578ac0f9f20f0717071e471b954101f32148146",
+        "mode": "100644"
+      }
+    ],
+    "published_sha": "4583b2788e6fecc056ea310b4ce76b1962be55de"
+  },
+  {
+    "item": 5,
+    "source": "root_work_v2/GestaltX-scan",
+    "source_sha": "88ca1e6105f1a6f16ec1520036f3dd4eaf92ec39",
+    "tree": "7af01d18b795e766414decc6703f4291b7bdab43",
+    "integration_input_commit": "7b0cc5dd7d7893de3c8ac81bc9ce01eaa128935d",
+    "files": [
+      {
+        "path": "GestaltX/MobileGestaltCacheLayout.swift",
+        "blob": "adba6abec73890b6ca6e366aaee7cabc5388e1c9",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/CacheScanWorkloads.swift",
+        "blob": "5a54c60c63e296730144cb080ee0229e63b90b2e",
+        "mode": "100644"
+      }
+    ],
+    "published_sha": "c9bce7dd50e21d904881f4512b7f3b56dab3d4ea"
+  },
+  {
+    "item": 6,
+    "source": "tools_apps_v2/gestalt6",
+    "source_sha": "c9f2d5d7fba46ae4d52bfa4f435701e048bbadec",
+    "tree": "3f46313cce42dfdba6c2368a8cc34112b90ae104",
+    "integration_input_commit": "e48a25fc97f8bf40e725a262b645d4e359766dc3",
+    "files": [
+      {
+        "path": "GestaltX/ContentView.swift",
+        "blob": "71a11616214a4fe576223f0fe9e3e4abaf500dd3",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/FieldSearchTests.swift",
+        "blob": "b79d364e10d45ecca376c7ae14705d29de68e2d7",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/run_field_search.py",
+        "blob": "526b2f6335136f6b83b156be974a4d4b13be9d64",
+        "mode": "100644"
+      }
+    ],
+    "published_sha": "c9f2d5d7fba46ae4d52bfa4f435701e048bbadec"
+  },
+  {
+    "item": 7,
+    "source": "ml_geometry_v2/gestaltx_field_precedence",
+    "source_sha": "ffca8189c55009afff71bc0ab551c949f479b6b8",
+    "tree": "6d0cd81249786e4eebfe3e7a9e65b74558d41337",
+    "integration_input_commit": "1d756336679843ade0f30f708d702ddd80ed5766",
+    "files": [
+      {
+        "path": "GestaltX/GestaltManager.swift",
+        "blob": "e260379850169447a028b595efa632c692e53613",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/FieldEditPrecedenceTests.swift",
+        "blob": "3372a30086c50c208d2ed2a6b2a809ae4f812733",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/run_field_manager_regression.py",
+        "blob": "09df878b34ec5c612e0cadfc4ad7549f78afe83a",
+        "mode": "100644"
+      }
+    ],
+    "published_sha": "ffca8189c55009afff71bc0ab551c949f479b6b8"
+  },
+  {
+    "item": 8,
+    "source": "ml_geometry_v2/gestaltx_field_key_identity",
+    "source_sha": "d02a539d1a2bb0874f4d2b9d4c53c406c5ffdf36",
+    "tree": "bec4b1136f7dc4969c012876f7680736254a83bc",
+    "integration_input_commit": "bf5a9a037d33ba975ff50fdd1750642bf99b367a",
+    "files": [
+      {
+        "path": "GestaltX/GestaltManager.swift",
+        "blob": "9899cf01e76a273000bc889568468cbadc863c06",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/FieldKeyIdentityTests.swift",
+        "blob": "ebfe8e7fdcbf0ccebc9b14cf9454440a6c20d49c",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/run_field_manager_regression.py",
+        "blob": "09df878b34ec5c612e0cadfc4ad7549f78afe83a",
+        "mode": "100644"
+      }
+    ],
+    "published_sha": "d02a539d1a2bb0874f4d2b9d4c53c406c5ffdf36"
+  },
+  {
+    "item": 9,
+    "source": "ml_geometry_v2/gestaltx_dictionary_compare",
+    "source_sha": "e38b855cb752ad02b6854dab4c2250f538bb8002",
+    "tree": "74aeac9d2fc60d6c176f831bda950584a6a758b3",
+    "integration_input_commit": "5257f826dee27ddaf963bd19c36c907a5adf89b8",
+    "files": [
+      {
+        "path": "GestaltX/GestaltDocument.swift",
+        "blob": "3eaba5e1d41ad7e4963df47ec04f8b68d3424b80",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/DictionaryComparisonTests.swift",
+        "blob": "7535a7c85a8c0d8745d87097d5fcff36463709a0",
+        "mode": "100644"
+      }
+    ],
+    "published_sha": "e38b855cb752ad02b6854dab4c2250f538bb8002"
+  },
+  {
+    "item": 10,
+    "source": "ml_geometry_v2/gestaltx_document_diff",
+    "source_sha": "760f8d23c47b7dfc2922839fd37fe508a72354a7",
+    "tree": "60da16b0ab613fbd9ce59c52bbe674cf6fbf6e38",
+    "integration_input_commit": "f4e1bee9960a5c0c8c73b35b7490fab18bb84991",
+    "files": [
+      {
+        "path": "GestaltX/GestaltManager.swift",
+        "blob": "28f405f1a3a303f3cad904c3de349b76bae169cd",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/DocumentDiffTests.swift",
+        "blob": "cf3b2ebcaf65193494345817d62e7fc66d8bb8e1",
+        "mode": "100644"
+      },
+      {
+        "path": "tests/run_document_diff_regression.py",
+        "blob": "eda30485177b62c01eefe81bb4a57f39ac189cfa",
+        "mode": "100644"
+      }
+    ],
+    "published_sha": "3e428152f8411c5c696a161cc5a7182c3fd05582",
+    "default_cli_correction": {
+      "original_head": "760f8d23c47b7dfc2922839fd37fe508a72354a7",
+      "current_head": "3e428152f8411c5c696a161cc5a7182c3fd05582",
+      "path": "tests/run_document_diff_regression.py",
+      "blob": "cd340090f72af7ff302e01fb98170f1ef3725856"
+    }
+  }
+]

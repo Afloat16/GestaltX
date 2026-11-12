@@ -129,6 +129,21 @@ struct SharedPlistInbox: Sendable {
         }
     }
 
+    // Try only the signed containers supplied by the caller. enqueue publishes
+    // atomically and never throws after publication, so a successful handoff is
+    // not duplicated in later containers.
+    static func enqueue(_ data: Data, name: String, in inboxes: [Self]) throws -> SharedPlistEntry {
+        try Task.checkCancellation()
+        try validate(data)
+        var firstError: Error?
+        for inbox in inboxes {
+            try Task.checkCancellation()
+            do { return try inbox.enqueue(data, name: name) }
+            catch { if firstError == nil { firstError = error } }
+        }
+        throw firstError ?? SharedPlistError(key: "Sign GestaltX and its share extension with the same App Group, then try again.")
+    }
+
     func enqueue(_ data: Data, name: String) throws -> SharedPlistEntry {
         try Self.validate(data)
         guard let parent = try openDirectory(create: true) else { throw Self.invalidQueue }

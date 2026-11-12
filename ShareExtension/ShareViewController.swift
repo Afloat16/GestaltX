@@ -48,12 +48,13 @@ final class ShareViewController: UIViewController {
         do {
             let providers = (extensionContext?.inputItems as? [NSExtensionItem])?.flatMap { $0.attachments ?? [] } ?? []
             guard providers.count == 1 else { throw SharedPlistError(key: "Share one MobileGestalt plist at a time.") }
-            guard let inbox = SharedAppGroups.inboxes.first else {
+            let inboxes = SharedAppGroups.inboxes
+            guard !inboxes.isEmpty else {
                 throw SharedPlistError(key: "Sign GestaltX and its share extension with the same App Group, then try again.")
             }
             let (data, name) = try await read(providers[0])
             try Task.checkCancellation()
-            _ = try inbox.enqueue(data, name: name)
+            _ = try SharedPlistInbox.enqueue(data, name: name, in: inboxes)
             // The inbox is the durable handoff; URL opening is just a notification.
             var components = URLComponents()
             components.scheme = "gestaltx"

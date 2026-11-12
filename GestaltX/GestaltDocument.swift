@@ -46,6 +46,12 @@ enum PlistValueKind: String, CaseIterable, Identifiable, Sendable {
             default: throw GestaltFailure("Use true or false for a Boolean value.")
             }
         case .date:
+            // The formatter can accept a valid date prefix and ignore trailing
+            // text. Field edits must consume the complete value the user entered.
+            let pattern = #"^[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt][0-9]{2}:[0-9]{2}:[0-9]{2}(?:\.[0-9]+)?(?:[Zz]|[+-][0-9]{2}:?[0-9]{2})$"#
+            guard trimmed.range(of: pattern, options: .regularExpression) != nil else {
+                throw GestaltFailure("Enter an ISO 8601 date, such as 2026-11-09T12:00:00Z.")
+            }
             let formatter = ISO8601DateFormatter()
             formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
             if let value = formatter.date(from: trimmed) { return value }
@@ -99,6 +105,8 @@ enum GestaltKeys {
 struct GestaltDocument: @unchecked Sendable {
     private(set) var root: [String: Any]
     var extra: [String: Any] { root["CacheExtra"] as? [String: Any] ?? [:] }
+    var cacheUUID: String? { root["CacheUUID"] as? String }
+    func matchesCacheUUID(_ uuid: String) -> Bool { cacheUUID?.caseInsensitiveCompare(uuid) == .orderedSame }
     var artwork: [String: Any] { extra[GestaltKeys.artwork] as? [String: Any] ?? [:] }
     var canEditArtwork: Bool { extra[GestaltKeys.artwork] == nil || extra[GestaltKeys.artwork] is [String: Any] }
 
@@ -178,15 +186,19 @@ struct GestaltDocument: @unchecked Sendable {
         guard kind == PlistValueKind.detect(b) else { return false }
         switch kind {
         case .dictionary:
-            guard let left = a as? [String: Any], let right = b as? [String: Any], Set(left.keys) == Set(right.keys) else { return false }
+            guard let left = a as? [String: Any], let right = b as? [String: Any], left.count == right.count else { return false }
+            // Equal counts plus a successful lookup for every left key prove
+            // the key sets match, without allocating two temporary Sets.
             return left.allSatisfy { key, value in right[key].map { valuesEqual(value, $0) } ?? false }
         case .array:
             guard let left = a as? [Any], let right = b as? [Any], left.count == right.count else { return false }
             return zip(left, right).allSatisfy { valuesEqual($0.0, $0.1) }
         case .integer:
             // int64Value wraps unsigned values above Int64.max (for example,
-            // UInt64.max becomes -1), hiding edits and readback corruption.
-            return (a as? NSNumber)?.stringValue == (b as? NSNumber)?.stringValue
+            // UInt64.max becomes -1). Compare the full numeric values without
+            // allocating two decimal strings for every integer in the plist.
+            guard let left = a as? NSNumber, let right = b as? NSNumber else { return false }
+            return left.compare(right) == .orderedSame
         case .real:
             guard let left = (a as? NSNumber)?.doubleValue,
                   let right = (b as? NSNumber)?.doubleValue else { return false }
@@ -390,6 +402,7 @@ actor GestaltFileStore {
             .filter { $0.pathExtension == "json" }
             .compactMap { url -> BackupRecord? in
                 guard let record = try? JSONDecoder().decode(BackupRecord.self, from: Data(contentsOf: url)),
+                      UUID(uuidString: url.deletingPathExtension().lastPathComponent) == record.id,
                       FileManager.default.fileExists(atPath: backupDirectory.appendingPathComponent(record.filename).path) else { return nil }
                 return record
             }.sorted { $0.date > $1.date }
@@ -464,9 +477,9 @@ actor GestaltFileStore {
                 else { throw GestaltFailure("Original values could not be read. No system changes were made.") }
             }
         }
-        let currentUUID = document.root["CacheUUID"] as? String ?? ""
-        let migrateAudio = audio.map { $0.layoutUUID != currentUUID } == true && !(unavailable["faceTimeAudio"]?.contains(currentUUID) ?? false)
-        let migrateWAPI = wapi.map { $0.layoutUUID != currentUUID } == true && !(unavailable["wapi"]?.contains(currentUUID) ?? false)
+        let currentUUID = document.cacheUUID ?? ""
+        let migrateAudio = audio.map { $0.layoutUUID.caseInsensitiveCompare(currentUUID) != .orderedSame } == true && !(unavailable["faceTimeAudio"]?.contains { $0.caseInsensitiveCompare(currentUUID) == .orderedSame } ?? false)
+        let migrateWAPI = wapi.map { $0.layoutUUID.caseInsensitiveCompare(currentUUID) != .orderedSame } == true && !(unavailable["wapi"]?.contains { $0.caseInsensitiveCompare(currentUUID) == .orderedSame } ?? false)
         if migrateAudio || migrateWAPI {
             let baseline = try recoverCacheBaseline(from: document)
             if migrateAudio {
@@ -490,6 +503,8 @@ actor GestaltFileStore {
         for key in ["CacheUUID", "CacheVersion"] {
             switch (document.root[key], current.root[key]) {
             case (nil, nil): continue
+            case (let old as String, let live as String)
+                where key == "CacheUUID" && old.caseInsensitiveCompare(live) == .orderedSame: continue
             case (let old?, let live?) where GestaltDocument.valuesEqual(old, live): continue
             default: return false
             }
@@ -634,8 +649,8 @@ actor GestaltFileStore {
 
     private func validateRestoreLayout(_ document: GestaltDocument, against current: GestaltDocument) throws {
         let failure = GestaltFailure("This plist uses a different system cache layout and cannot be restored.")
-        guard let uuid = document.root["CacheUUID"] as? String, !uuid.isEmpty,
-              current.root["CacheUUID"] as? String == uuid,
+        guard let uuid = document.cacheUUID, !uuid.isEmpty,
+              current.matchesCacheUUID(uuid),
               let data = document.root["CacheData"] as? Data,
               let currentData = current.root["CacheData"] as? Data, data.count == currentData.count else {
             throw failure
