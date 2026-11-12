@@ -178,7 +178,9 @@ struct GestaltDocument: @unchecked Sendable {
         guard kind == PlistValueKind.detect(b) else { return false }
         switch kind {
         case .dictionary:
-            guard let left = a as? [String: Any], let right = b as? [String: Any], Set(left.keys) == Set(right.keys) else { return false }
+            guard let left = a as? [String: Any], let right = b as? [String: Any], left.count == right.count else { return false }
+            // Equal counts plus a successful lookup for every left key prove
+            // the key sets match, without allocating two temporary Sets.
             return left.allSatisfy { key, value in right[key].map { valuesEqual(value, $0) } ?? false }
         case .array:
             guard let left = a as? [Any], let right = b as? [Any], left.count == right.count else { return false }
