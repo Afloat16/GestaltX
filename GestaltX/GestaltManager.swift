@@ -449,8 +449,11 @@ final class GestaltManager: ObservableObject {
     }
 
     func stage(_ draft: FieldDraft) throws {
-        let key = draft.key.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !key.isEmpty else { throw GestaltFailure("Enter a field key.") }
+        // Imported plist keys may legitimately contain surrounding whitespace
+        // or be empty. Editing their values must not rename those existing keys.
+        let preservesKey = draft.originalKey == draft.key && working?.extra[draft.key] != nil
+        let key = preservesKey ? draft.key : draft.key.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard preservesKey || !key.isEmpty else { throw GestaltFailure("Enter a field key.") }
         guard var doc = working else { throw GestaltFailure("Load a document first.") }
         if draft.originalKey != key && doc.extra[key] != nil { throw GestaltFailure("That key already exists. Edit the existing field instead.") }
         let value = try draft.parsedValue()
