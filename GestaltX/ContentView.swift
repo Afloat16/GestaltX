@@ -523,12 +523,15 @@ struct FieldsView: View {
     @State private var draft: FieldDraft?
     @State private var deletesKey: String?
     private var keys: [String] {
-        (model.preview?.extra.keys.sorted() ?? []).filter { key in
-            search.isEmpty || key.localizedCaseInsensitiveContains(search) || valueText(key).localizedCaseInsensitiveContains(search)
+        // Preview applies staged presets. Reuse one snapshot while filtering so each value
+        // lookup does not rebuild the complete document on the main actor.
+        let extra = model.preview?.extra ?? [:]
+        return extra.keys.sorted().filter { key in
+            search.isEmpty || key.localizedCaseInsensitiveContains(search) || valueText(key, in: extra).localizedCaseInsensitiveContains(search)
         }
     }
-    private func valueText(_ key: String) -> String {
-        guard let value = model.preview?.extra[key] else { return "" }
+    private func valueText(_ key: String, in extra: [String: Any]? = nil) -> String {
+        guard let value = (extra ?? model.preview?.extra)?[key] else { return "" }
         let type = PlistValueKind.detect(value)
         if type == .data { return String(format: L("%lld bytes"), Int64((value as? Data)?.count ?? 0)) }
         return type.text(for: value)
