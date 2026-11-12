@@ -1,0 +1,37 @@
+name: Field edit precedence native regression validation
+
+on:
+  push:
+    branches: [validation/gestaltx-field-precedence-20261112]
+
+permissions:
+  contents: read
+
+jobs:
+  native-regressions:
+    runs-on: xcode-27
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Record native toolchain
+        run: |
+          uname -s
+          xcodebuild -version
+          swiftc --version
+      - name: Reproduce the original defects and run revised regressions
+        run: python3 validation/run_field_precedence.py --repo . --base 6a8f94de9673460bb78548855a524817122d7752 --output "$RUNNER_TEMP/field-precedence-evidence"
+      - name: Build the app and share extension
+        run: |
+          xcodebuild -quiet -project GestaltX.xcodeproj -target GestaltX \
+            -configuration Debug -sdk iphonesimulator \
+            SYMROOT="$RUNNER_TEMP/field-precedence-build" CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM="" build
+      - name: Preserve source provenance and test logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: field-precedence-regression-evidence
+          path: ${{ runner.temp }}/field-precedence-evidence
+          retention-days: 14

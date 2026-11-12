@@ -460,7 +460,7 @@ final class GestaltManager: ObservableObject {
         let changedKeys = Set([key, draft.originalKey].compactMap { $0 })
         for capability in Capability.all where !changedKeys.isDisjoint(with: capability.keys) { choices[capability.id] = .keep }
         if !changedKeys.isDisjoint(with: [GestaltKeys.regionCode, GestaltKeys.regionInfo, GestaltKeys.legacyRegionInfo]) { regionID = "keep"; regionCodeID = "keep" }
-        if changedKeys.contains(GestaltKeys.artwork) { subtype = 0 }
+        resetLayoutPresets(overriddenBy: changedKeys)
         if changedKeys.contains(GestaltKeys.modelNumber) { modelID = "keep" }
         if !changedKeys.isDisjoint(with: [GestaltKeys.artwork, "Z/dqyWS6OZTRy10UcmUAhw", "bbtR9jQx50Fv5Af/affNtA"]) { changesName = false }
     }
@@ -468,9 +468,21 @@ final class GestaltManager: ObservableObject {
         working?.set(nil, for: key)
         for capability in Capability.all where capability.keys.contains(key) { choices[capability.id] = .keep }
         if [GestaltKeys.regionCode, GestaltKeys.regionInfo, GestaltKeys.legacyRegionInfo].contains(key) { regionID = "keep"; regionCodeID = "keep" }
-        if key == GestaltKeys.artwork { subtype = 0 }
+        resetLayoutPresets(overriddenBy: [key])
         if key == GestaltKeys.modelNumber { modelID = "keep" }
         if [GestaltKeys.artwork, "Z/dqyWS6OZTRy10UcmUAhw", "bbtR9jQx50Fv5Af/affNtA"].contains(key) { changesName = false }
+    }
+
+    private func resetLayoutPresets(overriddenBy keys: Set<String>) {
+        // A subtype preset writes both the artwork member and the capability
+        // flag. Explicit edits to either field must win over that preset.
+        if !keys.isDisjoint(with: [GestaltKeys.artwork, "YlEtTtHlNesRBMal1CqRaA"]) { subtype = 0 }
+        // Restoring/removing the capability also restores its artwork subtype.
+        // Enabling only changes the flag, so it can coexist with artwork edits.
+        if keys.contains(GestaltKeys.artwork),
+           [.disable, .removeAdded].contains(choices["dynamicIsland"] ?? .keep) {
+            choices["dynamicIsland"] = .keep
+        }
     }
 
     func apply() async {
