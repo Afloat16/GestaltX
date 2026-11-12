@@ -85,7 +85,10 @@ def main():
             sources.append(repo / "tests/WAPITests.swift")
         sources.append(repo / "tests" / (name + ".swift"))
         binary = destination / "test"
-        run(["swiftc", "-O", "-swift-version", "5", "-parse-as-library", *sources, "-o", binary],
+        # Keep assertions active in the existing regression programs. Only the
+        # dictionary workload uses its verified explicit throwing checks with -O.
+        options = ["-O"] if name == "DictionaryComparisonTests" else []
+        run(["swiftc", *options, "-swift-version", "5", "-parse-as-library", *sources, "-o", binary],
             destination, "compile", repo)
         run([binary, *arguments], destination, "run", repo, timeout=90)
 
