@@ -67,7 +67,9 @@ def run(command, root, label, timeout):
 def compile_test(repo, source_ref, test_ref, test_path, root):
     root.mkdir(parents=True, exist_ok=True)
     paths, provenance = [], []
-    for path in CORE:
+    sources = CORE + (["Shared/SharedPlistInbox.swift", "GestaltX/DeviceBoundPlist.swift"]
+                      if test_path == "tests/BackupExportProofTests.swift" else [])
+    for path in sources:
         output, details = export(repo, source_ref, path, root / "production")
         paths.append(str(output))
         provenance.append(details)
