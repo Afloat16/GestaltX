@@ -2,7 +2,8 @@ import Foundation
 import Darwin
 
 // run_shared_publication.py supplies an entry point extracted from the actual
-// share controller, so these same tests run against its original and new paths.
+// share controller, so these same tests run against its original and new paths,
+// including the Receipt that cleans up a handoff after cancellation.
 @main struct SharedInboxPublicationTests {
     struct Failure: Error { let message: String }
     static func expect(_ condition: Bool, _ message: String) throws {
@@ -87,6 +88,44 @@ import Darwin
             do { try await task.value; throw Failure(message: "Cancelled shares must not publish") }
             catch is CancellationError { }
             try expect(!fm.fileExists(atPath: good.directory.path), "Cancellation leaves no durable handoff")
+        case "callback-cancelled":
+            do {
+                try publishShareFixture(bytes, name: "source.plist", inboxes: [good, later], checkCancellation: {
+                    throw CancellationError()
+                })
+                throw Failure(message: "Provider cancellation must prevent publication")
+            } catch is CancellationError { }
+            try expect(!fm.fileExists(atPath: good.directory.path), "Provider cancellation leaves no durable handoff")
+        case "cancelled-after-publication", "cancelled-after-fallback":
+            let inboxes = name == "cancelled-after-fallback" ? [bad, good, later] : [good, later]
+            var published = false
+            do {
+                try publishShareFixture(bytes, name: "source.plist", inboxes: inboxes, checkCancellation: {
+                    if try !good.entries().isEmpty {
+                        published = true
+                        throw CancellationError()
+                    }
+                })
+                throw Failure(message: "A cancelled receipt must be removed")
+            } catch is CancellationError { }
+            catch let error as Failure { throw error }
+            catch { throw Failure(message: "A healthy signed inbox must receive the shared document before cancellation: \(error)") }
+            try expect(published, "Exercise cancellation after the atomic handoff")
+            try expect(try good.entries().isEmpty, "Receipt cancellation removes the actual successful inbox entry")
+            try expect(!fm.fileExists(atPath: later.directory.path), "Cancellation must not duplicate a completed share")
+            if name == "cancelled-after-fallback" {
+                try expect(try Data(contentsOf: bad.directory) == sentinel, "Receipt cleanup leaves the failed inbox intact")
+            }
+        case "wallpaper":
+            let wallpaper = try SharedPlistInbox(container: root.appendingPathComponent("wallpaper"), namespace: "app", kind: .wallpaper)
+            let archive = Data([0x50, 0x4b, 0x05, 0x06] + [UInt8](repeating: 0, count: 18))
+            try publishShareFixture(archive, name: "source.zip", inboxes: [good], wallpaperInboxes: [wallpaper])
+            let entries = try wallpaper.entries()
+            try expect(entries.count == 1 && entries[0].name == "source.zip", "Wallpaper publication keeps its own queue")
+            let staged = root.appendingPathComponent("staged.zip")
+            try wallpaper.stageWallpaper(entries[0], at: staged)
+            try expect(try Data(contentsOf: staged) == archive, "Wallpaper publication preserves archive bytes")
+            try expect(!fm.fileExists(atPath: good.directory.path), "Wallpaper publication must not create a plist queue")
         default: throw Failure(message: "Unknown case \(name)")
         }
         print("PASS \(name)")
@@ -94,7 +133,8 @@ import Darwin
 
     @MainActor static func main() async {
         let names = CommandLine.arguments.dropFirst().isEmpty
-            ? ["bad-first", "two-bad", "linked-first", "first-healthy", "all-bad", "invalid", "empty", "cancelled"]
+            ? ["bad-first", "two-bad", "linked-first", "first-healthy", "all-bad", "invalid", "empty", "cancelled",
+               "callback-cancelled", "cancelled-after-publication", "cancelled-after-fallback", "wallpaper"]
             : Array(CommandLine.arguments.dropFirst())
         do { for name in names { try await run(name) } }
         catch { fputs("FAIL: \(error)\n", stderr); exit(1) }
